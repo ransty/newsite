@@ -1,0 +1,36 @@
+Booking Form Email
+----------------------
+
+After submission, sends email to info@learnpassdrive.com.au
+
+
+-- Subject --
+Booking Enquiry
+
+-- Body --
+Name:
+Suburb:
+Phone:
+Email:
+Preferred Lesson Date:
+Lesson Package Chosen:
+
+Please contact as soon as possible to confirm time!
+
+-------------------------------------------------------------------
+
+Send automatic email thanking for booking enquiry, we will be in touch soon to confirm your lesson spot.
+
+Email Format:
+
+-- Subject --
+Thank you for your Booking Enquiry
+
+Hello {{name}}, 
+
+Thank you for your booking enquiry. 
+You have selected a preferred lesson date of {{date}}
+We will be in touch as soon as possible to confirm the availability of your lesson day.
+
+Thanks,
+The Learn Pass Drive Team.
