@@ -179,7 +179,7 @@ else                /* send the submitted data */
 
         }
         echo "Email sent";
-
+    }
     }
 ?>
     
@@ -204,6 +204,5 @@ $('#gform').on('submit', function(e) {
     <script src="/js/agency.min.js"></script>
 
 </body>
-
 </html>
 
