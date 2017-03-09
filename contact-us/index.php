@@ -3,6 +3,7 @@
 		$name = $_POST['name'];
 		$email = $_POST['email'];
         $suburb = $_POST['suburb'];
+        $phone = $_POST['phone'];
 		$message = $_POST['message'];
 		$human = intval($_POST['human']);
 		$to = 'ransty.jr@gmail.com'; 
@@ -184,8 +185,14 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
                     <div class="form-group">
 						<label for="name" class="col-sm-2 control-label">Suburb</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="name" name="name" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['suburb']); ?>">
+							<input type="text" class="form-control" id="name" name="suburb" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['suburb']); ?>">
 							<?php echo "<p class='text-danger'>$errSuburb</p>";?>
+						</div>
+					</div>                    
+                    <div class="form-group">
+						<label for="name" class="col-sm-2 control-label">Phone</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="name" name="phone" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['phone']); ?>">
 						</div>
 					</div>
 					<div class="form-group">
