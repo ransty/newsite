@@ -173,10 +173,14 @@ else                /* send the submitted data */
 	    }
     else{
         $subject= "$name has an enquiry!";
-		mail("ransty.jr@gmail.com", $subject, $message);
-		echo "Email sent!";
-	    }
-    }  
+        if( mail("ransty.jr@gmail.com", $subject, $message)!==true)
+        {
+            echo "Failed to send";
+
+        }
+        echo "Email sent";
+
+    }
 ?>
     
     <script src="../vendor/jquery/jquery.min.js"></script>
