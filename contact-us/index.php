@@ -173,6 +173,7 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
             </div>
         </div>
     </header>
+	
   	<div class="container">
   		<div class="row">
   			<div class="col-md-6 col-md-offset-3">
@@ -185,7 +186,7 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 							<?php echo "<p class='text-danger'>$errName</p>";?>
 						</div>
 					</div>					
-                    <div class="form-group">
+                    			<div class="form-group">
 						<label for="suburb" class="col-sm-2 control-label">Suburb</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="suburb" name="suburb" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['suburb']); ?>">
@@ -193,12 +194,16 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 						</div>
 					</div>
                     			<div class="form-group">
-						<label for="phone" class="col-sm-2 control-label">Phone</label> <div class="form-group">
-						<div class="col-sm-10">
-							<label for="email" class="col-sm-2 control-label">Email</label>
-							<input type="text" class="form-control" id="phone" name="phone" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['phone']); ?>"> <div class="col-sm-10">
-						</div> <input type="email" class="form-control" id="email" name="email" placeholder="example@domain.com" value="<?php echo htmlspecialchars($_POST['email']); ?>">
-					</div>							<?php echo "<p class='text-danger'>$errEmail</p>";?>
+						<label for="phone" class="col-sm-2 control-label">Phone</label> 
+						<div class="col-sm-10">	
+							<input type="text" class="form-control" id="phone" name="phone" placeholder="0412345678" value="<?php echo htmlspecialchars($_POST['phone']); ?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="email" class="col-sm-2 control-label">Phone</label>
+						<div class="col-sm-10">	
+							<input type="text" class="form-control" id="email" name="email" placeholder="you@example.com" value="<?php echo htmlspecialchars($_POST['email']); ?>">
+							<?php echo "<p class='text-danger'>$errEmail</p>";?>
 						</div>
 					</div>
 					<div class="form-group">
@@ -230,7 +235,7 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 		</div>
 	</div>   
       
-    <script src="../vendor/jquery/jquery.min.js"></script>
+<script src="../vendor/jquery/jquery.min.js"></script>
 <script type="text/javascript">var submitted=false;</script>
 <script type="text/javascript">
 $('#gform').on('submit', function(e) {
