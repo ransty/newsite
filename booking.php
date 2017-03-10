@@ -5,14 +5,15 @@
 		$email = $_POST['email'];
         $suburb = $_POST['suburb'];
 		$phone = $_POST['phone'];
-		$message = $_POST['message'];
+        $date = $_POST['date'];
+		$package = $_POST['package'];
 		$human = intval($_POST['human']);
 		$to = 'ransty.jr@gmail.com'; 
 		$subject = $name . ' has an enquiry';
 		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
     'Reply-To: ' .$email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();		
-		$body ="From: $name\n E-Mail: $email\n Phone Number: $phone\n Message:\n $message";
+		$body ="From: $name\n E-Mail: $email\n Phone Number: $phone\n Suburb: $suburb\n Pack selected:\n $package";
         
 		// Check if name has been entered
 		if (!$_POST['name']) {
@@ -153,10 +154,10 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
                         <a class="page-scroll" href="../index.html#testimonials">Testimonials</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="booking.php#booking">Booking</a>
+                        <a class="page-scroll" href="#booking">Booking</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
+                        <a class="page-scroll" href="contact.php#contact">Contact</a>
                     </li>
                 </ul>
             </div>
@@ -174,69 +175,45 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
             </div>
         </div>
     </header>
-	
-  	<div class="container">
-  		<div class="row">
-  			<div class="col-md-6 col-md-offset-3">
-  				<h1 class="page-header text-center">Contact Form</h1>
-				<form class="form-horizontal" role="form" method="post" action="index.php">
-					<div class="form-group">
-						<label for="name" class="col-sm-2 control-label">Name</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="name" name="name" placeholder="First & Last Name" value="<?php echo htmlspecialchars($_POST['name']); ?>">
-							<?php echo "<p class='text-danger'>$errName</p>";?>
-						</div>
-					</div>					
-                    			<div class="form-group">
-						<label for="suburb" class="col-sm-2 control-label">Suburb</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="suburb" name="suburb" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['suburb']); ?>">
-							<?php echo "<p class='text-danger'>$errSuburb</p>";?>
-						</div>
-					</div>
-                    			<div class="form-group">
-						<label for="phone" class="col-sm-2 control-label">Phone</label> 
-						<div class="col-sm-10">	
-							<input type="text" class="form-control" id="phone" name="phone" placeholder="0412345678" value="<?php echo htmlspecialchars($_POST['phone']); ?>">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="email" class="col-sm-2 control-label">Email</label>
-						<div class="col-sm-10">	
-							<input type="text" class="form-control" id="email" name="email" placeholder="you@example.com" value="<?php echo htmlspecialchars($_POST['email']); ?>">
-							<?php echo "<p class='text-danger'>$errEmail</p>";?>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="message" class="col-sm-2 control-label">Message</label>
-						<div class="col-sm-10">
-							<textarea class="form-control" rows="4" name="message"><?php echo htmlspecialchars($_POST['message']);?></textarea>
-							<?php echo "<p class='text-danger'>$errMessage</p>";?>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="human" class="col-sm-2 control-label">2 + 3 = ?</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="human" name="human" placeholder="Your Answer">
-							<?php echo "<p class='text-danger'>$errHuman</p>";?>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-10 col-sm-offset-2">
-							<input id="submit" name="submit" type="submit" value="Send" class="btn btn-primary">
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-10 col-sm-offset-2">
-							<?php echo $result; ?>	
-						</div>
-					</div>
-				</form> 
-			</div>
-		</div>
-	</div>   
-      
-<script src="../vendor/jquery/jquery.min.js"></script>
+
+    <div class="col-lg-12 text-center">
+    <h2>Booking form</h2>
+        <p class="section-subheading text-muted">To book a lesson time, fill out your details below and we'll be in touch to confirm the availability of your preferred date.</p>
+    </div>
+    <div id="booking" style="width: 500px; margin: 0 auto; margin-left: auto; margin-right: auto;">
+        <div>
+        <form method='POST' enctype="text/plain" action="booking.php" onsubmit="submitted=true;">
+            <label><h4 class="service-heading">Name:</h4></label><br>
+            <input class="form-control" type="text" name="name" id="name" required autofocus placeholder="Name"><br>
+            <label><h4 class="service-heading">Suburb:</h4></label><br>
+            <input class="form-control" type="text" name="suburb" id="suburb"  required placeholder="Suburb"><br>
+            <label><h4 class="service-heading">Phone:</h4></label><br>
+            <input class="form-control" type="text" name="phone" id="phone" required placeholder="Phone Number"><br>
+            <label><h4 class="service-heading">Email:</h4></label><br>
+            <input class="form-control" type="text" name="email" id="email"  required placeholder="Email"><br>
+            <label><h4 class="service-heading">Preferred Lesson Date:</h4></label><br>
+            <input type="date" name="date" id="date"><br>
+            <label><h4 class="service-heading">I want to book...</h4></label><br>
+            <select name="package">
+                <option value="single">Single 60 Minute Lesson $65</option>
+                <option value="single90">Single 90 Minute Lesson $95</option>
+                <option value="new2thewheel">New to the Wheel Pack $315</option>
+                <option value="sdttp">Same Day Train &amp; Test Pack $270</option>
+                <option value="ttp1">Train &amp; Test Pack 1 $525</option>
+                <option value="ttp2">Train &amp; Test Pack 2 $550</option>
+                <option value="ttp3">Train &amp; Test Pack 3 $740</option>
+                <option value="olcp">Overseas License Conversion Pack $590</option>
+            </select>
+            <br>
+            <br>
+                        <div class="col-lg-12 text-center">
+                <input class="btn btn-primary" style="margin: 0 auto" type="submit" value="Book">
+            </div>
+        </form>
+        </div><br><br>
+    </div>
+    
+    <script src="../vendor/jquery/jquery.min.js"></script>
 <script type="text/javascript">var submitted=false;</script>
 <script type="text/javascript">
 $('#gform').on('submit', function(e) {
@@ -258,3 +235,4 @@ $('#gform').on('submit', function(e) {
 
 </body>
 </html>
+
