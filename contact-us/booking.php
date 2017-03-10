@@ -9,11 +9,11 @@
 		$package = $_POST['package'];
 		$human = intval($_POST['human']);
 		$to = 'ransty.jr@gmail.com'; 
-		$subject = $name . ' has an enquiry';
+		$subject = $name . ' wants to book a lesson!';
 		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
     'Reply-To: ' .$email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();		
-		$body ="From: $name\n Suburb: $suburb\n Phone Number: $phone\n E-Mail: $email\n Preferred Lesson Date: $date\n Pack selected:\n $package";
+		$body ="From: $name\n Suburb: $suburb\n Phone Number: $phone\n E-Mail: $email\n Preferred Lesson Date: $date\n Pack selected: $package \n \n *** This is an automatically generated email, pressing reply will contact the customer ***";
         
 		// Check if name has been entered
 		if (!$_POST['name']) {
@@ -38,9 +38,9 @@
 // If there are no errors, send the email
 if (!$errName && !$errEmail && !$errHuman) {
 	if (mail ($to, $subject, $body, $headers)) {
-		$result='<div class="alert alert-success">Thank You! I will be in touch as soon as possible.</div>';
+		$result='<div class="alert alert-success text-center">Thank You! I will be in touch as soon as possible.</div>';
 	} else {
-		$result='<div class="alert alert-danger">Sorry there was an error sending your message. Please try again later.</div>';
+		$result='<div class="alert alert-danger text-center">Sorry there was an error sending your message. Please try again later.</div>';
 	}
 }
 	}

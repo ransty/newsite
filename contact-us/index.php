@@ -12,7 +12,7 @@
 		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
     'Reply-To: ' .$email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();		
-		$body ="From: $name\n Suburb: $suburb\n E-Mail: $email\n Phone Number: $phone\n Message:\n $message";
+		$body ="From: $name\n Suburb: $suburb\n E-Mail: $email\n Phone Number: $phone\n Message:\n $message \n \n *** This is an automatically generated email, pressing reply will contact the customer ***";
         
 		// Check if name has been entered
 		if (!$_POST['name']) {
@@ -35,9 +35,9 @@
 // If there are no errors, send the email
 if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 	if (mail ($to, $subject, $body, $headers)) {
-		$result='<div class="alert alert-success">Thank You! I will be in touch as soon as possible.</div>';
+		$result='<div class="alert alert-success text-center">Thank You! I will be in touch as soon as possible.</div>';
 	} else {
-		$result='<div class="alert alert-danger">Sorry there was an error sending your message. Please try again later.</div>';
+		$result='<div class="alert alert-danger text-center">Sorry there was an error sending your message. Please try again later.</div>';
 	}
 }
 	}
