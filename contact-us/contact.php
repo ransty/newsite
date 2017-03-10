@@ -12,7 +12,7 @@
 		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
     'Reply-To: ' .$email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();		
-		$body ="From: $name\n Suburb: $suburb\n E-Mail: $email\n Phone Number: $phone\n Message:\n $message";
+		$body ="From: $name\n Suburb: $suburb\n Phone Number: $phone\n E-Mail: $email\n Message:\n $message";
         
 		// Check if name has been entered
 		if (!$_POST['name']) {

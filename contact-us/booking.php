@@ -13,7 +13,7 @@
 		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
     'Reply-To: ' .$email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();		
-		$body ="From: $name\n Suburb: $suburb\n E-Mail: $email\n Phone Number: $phone\n Pack selected:\n $package";
+		$body ="From: $name\n Suburb: $suburb\n Phone Number: $phone\n E-Mail: $email\n Preferred Lesson Date: $date\n Pack selected:\n $package";
         
 		// Check if name has been entered
 		if (!$_POST['name']) {
@@ -29,17 +29,14 @@
 		if (!$_POST['email'] || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 			$errEmail = 'Please enter a valid email address';
 		}
-		
-		//Check if message has been entered
-		if (!$_POST['message']) {
-			$errMessage = 'Please enter your message';
-		}
+        
 		//Check if simple anti-bot test is correct
 		if ($human !== 5) {
 			$errHuman = 'Your anti-spam is incorrect';
 		}
+        
 // If there are no errors, send the email
-if (!$errName && !$errEmail && !$errMessage && !errDate && !$errHuman) {
+if (!$errName && !$errEmail && !$errHuman) {
 	if (mail ($to, $subject, $body, $headers)) {
 		$result='<div class="alert alert-success">Thank You! I will be in touch as soon as possible.</div>';
 	} else {
@@ -199,7 +196,6 @@ if (!$errName && !$errEmail && !$errMessage && !errDate && !$errHuman) {
 						<label for="suburb" class="col-sm-2">Suburb</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="suburb" name="suburb" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['suburb']); ?>">
-							<?php echo "<p class='text-danger'>$errSuburb</p>";?>
 						</div>
 					</div>
                     <div class="form-group">
@@ -256,11 +252,6 @@ if (!$errName && !$errEmail && !$errMessage && !errDate && !$errHuman) {
     
     <script src="../vendor/jquery/jquery.min.js"></script>
 <script type="text/javascript">var submitted=false;</script>
-<script type="text/javascript">
-$('#gform').on('submit', function(e) {
-  $('#gform').append('Thank you for making contact with us, we will be in touch soon!');
-  });
-</script>
 
     <!-- jQuery -->
     <script src="/vendor/jquery/jquery.min.js"></script>
