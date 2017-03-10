@@ -5,7 +5,7 @@
 		$email = $_POST['email'];
         $suburb = $_POST['suburb'];
 		$phone = $_POST['phone'];
-        $date = $_POST['date'];
+        $date = date("Y-m-d", strtotime($_POST['date']));
 		$package = $_POST['package'];
 		$human = intval($_POST['human']);
 		$to = 'ransty.jr@gmail.com'; 
@@ -13,13 +13,18 @@
 		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
     'Reply-To: ' .$email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();		
-		$body ="From: $name\n E-Mail: $email\n Phone Number: $phone\n Suburb: $suburb\n Pack selected:\n $package";
+		$body ="From: $name\n Suburb: $suburb\n E-Mail: $email\n Phone Number: $phone\n Pack selected:\n $package";
         
 		// Check if name has been entered
 		if (!$_POST['name']) {
 			$errName = 'Please enter your name';
 		}
-		
+		        
+        // Check if date has been entered
+        if (!$_POST['date']) {
+            $errDate = 'Please select a date';
+        }
+        
 		// Check if email has been entered and is valid
 		if (!$_POST['email'] || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 			$errEmail = 'Please enter a valid email address';
@@ -34,7 +39,7 @@
 			$errHuman = 'Your anti-spam is incorrect';
 		}
 // If there are no errors, send the email
-if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
+if (!$errName && !$errEmail && !$errMessage && !errDate && !$errHuman) {
 	if (mail ($to, $subject, $body, $headers)) {
 		$result='<div class="alert alert-success">Thank You! I will be in touch as soon as possible.</div>';
 	} else {
@@ -179,11 +184,8 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
   	<div class="container">
   		<div class="row">
   			<div class="col-md-6 col-md-offset-3">
-                    <div class="form-group">
-						<div class="col-sm-10 col-sm-offset-2">
-							<?php echo $result; ?>	
-						</div>
-					</div>
+                <br>
+				<?php echo $result; ?>	
   				<h1 class="page-header text-center">Booking Form</h1>
 				<form class="form-horizontal" role="form" method="post" action="booking.php">
 					<div class="form-group">
@@ -217,20 +219,21 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 				        <label for="date" class="col-sm-2">Preferred Lesson Date:</label>
                         <div class="col-sm-10">
                             <input type="date" class="form-control" id="date" name="date" value="<?php echo htmlspecialchars($_POST['date']); ?>">
+                            <?php echo "<p class='text-danger'>$errDate</p>";?>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="package" class="col-sm-2">I want to book...</label>
                         <div class="col-sm-10">
-                        <select id="package" class="form-control" name="package" value="<?php echo htmlspecialchars($_POST['package']); ?>">
-                            <option value="single">Single 60 Minute Lesson $65</option>
-                            <option value="single90">Single 90 Minute Lesson $95</option>
-                            <option value="new2thewheel">New to the Wheel Pack $315</option>
-                            <option value="sdttp">Same Day Train &amp; Test Pack $270</option>
-                            <option value="ttp1">Train &amp; Test Pack 1 $525</option>
-                            <option value="ttp2">Train &amp; Test Pack 2 $550</option>
-                            <option value="ttp3">Train &amp; Test Pack 3 $740</option>
-                            <option value="olcp">Overseas License Conversion Pack $590</option>
+                        <select class="form-control" name="package">
+                            <option value="Single 60 Minute Lesson">Single 60 Minute Lesson $65</option>
+                            <option value="Single 90 Minute Lesson">Single 90 Minute Lesson $95</option>
+                            <option value="New to the Wheel Pack">New to the Wheel Pack $315</option>
+                            <option value="Same Day Train &amp; Test Pack">Same Day Train &amp; Test Pack $270</option>
+                            <option value="Train &amp; Test Pack 1">Train &amp; Test Pack 1 $525</option>
+                            <option value="Train &amp; Test Pack 2">Train &amp; Test Pack 2 $550</option>
+                            <option value="Train &amp; Test Pack 3">Train &amp; Test Pack 3 $740</option>
+                            <option value="Overseas License Conversion Pack">Overseas License Conversion Pack $590</option>
                         </select>
                     </div>
                     </div>

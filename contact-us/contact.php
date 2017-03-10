@@ -12,13 +12,13 @@
 		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
     'Reply-To: ' .$email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();		
-		$body ="From: $name\n E-Mail: $email\n Phone Number: $phone\n Message:\n $message";
+		$body ="From: $name\n Suburb: $suburb\n E-Mail: $email\n Phone Number: $phone\n Message:\n $message";
         
 		// Check if name has been entered
 		if (!$_POST['name']) {
 			$errName = 'Please enter your name';
 		}
-		
+        
 		// Check if email has been entered and is valid
 		if (!$_POST['email'] || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 			$errEmail = 'Please enter a valid email address';
@@ -35,7 +35,7 @@
 // If there are no errors, send the email
 if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 	if (mail ($to, $subject, $body, $headers)) {
-		$result='<div class="alert alert-success">Thank You! I will be in touch as soon as possible.</div>';
+		$result='<br><div class="alert alert-success">Thank You! I will be in touch as soon as possible.</div>';
 	} else {
 		$result='<div class="alert alert-danger">Sorry there was an error sending your message. Please try again later.</div>';
 	}
@@ -178,13 +178,10 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
   	<div class="container">
   		<div class="row">
   			<div class="col-md-6 col-md-offset-3">
-                    <div class="form-group">
-						<div class="col-sm-10 col-sm-offset-2">
-							<?php echo $result; ?>	
-						</div>
-					</div>
+                <br>
+                <?php echo $result; ?>	
   				<h1 class="page-header text-center">Contact Form</h1>
-				<form class="form-horizontal" role="form" method="post" action="index.php">
+				<form class="form-horizontal" role="form" method="post" action="contact.php">
 					<div class="form-group">
 						<label for="name" class="col-sm-2">Name</label>
 						<div class="col-sm-10">

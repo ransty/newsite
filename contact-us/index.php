@@ -12,7 +12,7 @@
 		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
     'Reply-To: ' .$email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();		
-		$body ="From: $name\n E-Mail: $email\n Phone Number: $phone\n Message:\n $message";
+		$body ="From: $name\n Suburb: $suburb\n E-Mail: $email\n Phone Number: $phone\n Message:\n $message";
         
 		// Check if name has been entered
 		if (!$_POST['name']) {
@@ -178,11 +178,8 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
   	<div class="container">
   		<div class="row">
   			<div class="col-md-6 col-md-offset-3">
-                    <div class="form-group">
-						<div class="col-sm-10 col-sm-offset-2">
-							<?php echo $result; ?>	
-						</div>
-					</div>
+                <br>
+                <?php echo $result; ?>	
   				<h1 class="page-header text-center">Contact Form</h1>
 				<form class="form-horizontal" role="form" method="post" action="index.php">
 					<div class="form-group">
