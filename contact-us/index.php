@@ -1,13 +1,17 @@
 <?php
 	if (isset($_POST["submit"])) {
+		$keano = "LearnPassDrive";
 		$name = $_POST['name'];
 		$email = $_POST['email'];
-        $suburb = $_POST['suburb'];
+        	$suburb = $_POST['suburb'];
+		$phone = $_POST['phone'];
 		$message = $_POST['message'];
 		$human = intval($_POST['human']);
 		$to = 'ransty.jr@gmail.com'; 
-		$subject = $name . ' has an enquiry' . $suburb;
-		
+		$subject = $name . ' has an enquiry';
+		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
+    'Reply-To: ' .$email . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();		
 		$body ="From: $name\n E-Mail: $email\n Message:\n $message";
 		// Check if name has been entered
 		if (!$_POST['name']) {
@@ -29,7 +33,7 @@
 		}
 // If there are no errors, send the email
 if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
-	if (mail ($to, $subject, $body)) {
+	if (mail ($to, $subject, $body, $headers)) {
 		$result='<div class="alert alert-success">Thank You! I will be in touch as soon as possible.</div>';
 	} else {
 		$result='<div class="alert alert-danger">Sorry there was an error sending your message. Please try again later.</div>';
@@ -182,17 +186,19 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 						</div>
 					</div>					
                     <div class="form-group">
-						<label for="name" class="col-sm-2 control-label">Suburb</label>
+						<label for="suburb" class="col-sm-2 control-label">Suburb</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="name" name="name" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['suburb']); ?>">
+							<input type="text" class="form-control" id="suburb" name="suburb" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['suburb']); ?>">
 							<?php echo "<p class='text-danger'>$errSuburb</p>";?>
 						</div>
 					</div>
-					<div class="form-group">
-						<label for="email" class="col-sm-2 control-label">Email</label>
+                    			<div class="form-group">
+						<label for="phone" class="col-sm-2 control-label">Phone</label> <div class="form-group">
 						<div class="col-sm-10">
-							<input type="email" class="form-control" id="email" name="email" placeholder="example@domain.com" value="<?php echo htmlspecialchars($_POST['email']); ?>">
-							<?php echo "<p class='text-danger'>$errEmail</p>";?>
+							<label for="email" class="col-sm-2 control-label">Email</label>
+							<input type="text" class="form-control" id="phone" name="phone" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['phone']); ?>"> <div class="col-sm-10">
+						</div> <input type="email" class="form-control" id="email" name="email" placeholder="example@domain.com" value="<?php echo htmlspecialchars($_POST['email']); ?>">
+					</div>							<?php echo "<p class='text-danger'>$errEmail</p>";?>
 						</div>
 					</div>
 					<div class="form-group">
