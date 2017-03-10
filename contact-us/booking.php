@@ -185,7 +185,7 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 						</div>
 					</div>
   				<h1 class="page-header text-center">Booking Form</h1>
-				<form class="form-horizontal" role="form" method="post" action="index.php">
+				<form class="form-horizontal" role="form" method="post" action="booking.php">
 					<div class="form-group">
 						<label for="name" class="col-sm-2">Name</label>
 						<div class="col-sm-10">
