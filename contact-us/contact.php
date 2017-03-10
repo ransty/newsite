@@ -178,44 +178,49 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
   	<div class="container">
   		<div class="row">
   			<div class="col-md-6 col-md-offset-3">
+                    <div class="form-group">
+						<div class="col-sm-10 col-sm-offset-2">
+							<?php echo $result; ?>	
+						</div>
+					</div>
   				<h1 class="page-header text-center">Contact Form</h1>
 				<form class="form-horizontal" role="form" method="post" action="index.php">
 					<div class="form-group">
-						<label for="name" class="col-sm-2 control-label">Name</label>
+						<label for="name" class="col-sm-2">Name</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="name" name="name" placeholder="First & Last Name" value="<?php echo htmlspecialchars($_POST['name']); ?>">
 							<?php echo "<p class='text-danger'>$errName</p>";?>
 						</div>
 					</div>					
                     			<div class="form-group">
-						<label for="suburb" class="col-sm-2 control-label">Suburb</label>
+						<label for="suburb" class="col-sm-2">Suburb</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="suburb" name="suburb" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['suburb']); ?>">
 							<?php echo "<p class='text-danger'>$errSuburb</p>";?>
 						</div>
 					</div>
-                    			<div class="form-group">
-						<label for="phone" class="col-sm-2 control-label">Phone</label> 
+                    <div class="form-group">
+						<label for="phone" class="col-sm-2">Phone</label> 
 						<div class="col-sm-10">	
-							<input type="text" class="form-control" id="phone" name="phone" placeholder="0412345678" value="<?php echo htmlspecialchars($_POST['phone']); ?>">
+							<input type="text" class="form-control" id="phone" name="phone" placeholder="0412 345 678" value="<?php echo htmlspecialchars($_POST['phone']); ?>">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="email" class="col-sm-2 control-label">Email</label>
+						<label for="email" class="col-sm-2">Email</label>
 						<div class="col-sm-10">	
 							<input type="text" class="form-control" id="email" name="email" placeholder="you@example.com" value="<?php echo htmlspecialchars($_POST['email']); ?>">
 							<?php echo "<p class='text-danger'>$errEmail</p>";?>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="message" class="col-sm-2 control-label">Message</label>
+						<label for="message" class="col-sm-2">Message</label>
 						<div class="col-sm-10">
 							<textarea class="form-control" rows="4" name="message"><?php echo htmlspecialchars($_POST['message']);?></textarea>
 							<?php echo "<p class='text-danger'>$errMessage</p>";?>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="human" class="col-sm-2 control-label">2 + 3 = ?</label>
+						<label for="human" class="col-sm-2">2 + 3 = ?</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="human" name="human" placeholder="Your Answer">
 							<?php echo "<p class='text-danger'>$errHuman</p>";?>
@@ -224,11 +229,6 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 					<div class="form-group">
 						<div class="col-sm-10 col-sm-offset-2">
 							<input id="submit" name="submit" type="submit" value="Send" class="btn btn-primary">
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-10 col-sm-offset-2">
-							<?php echo $result; ?>	
 						</div>
 					</div>
 				</form> 

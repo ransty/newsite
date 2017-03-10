@@ -5,14 +5,15 @@
 		$email = $_POST['email'];
         $suburb = $_POST['suburb'];
 		$phone = $_POST['phone'];
-		$message = $_POST['message'];
+        $date = $_POST['date'];
+		$package = $_POST['package'];
 		$human = intval($_POST['human']);
 		$to = 'ransty.jr@gmail.com'; 
 		$subject = $name . ' has an enquiry';
 		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
     'Reply-To: ' .$email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();		
-		$body ="From: $name\n E-Mail: $email\n Phone Number: $phone\n Message:\n $message";
+		$body ="From: $name\n E-Mail: $email\n Phone Number: $phone\n Suburb: $suburb\n Pack selected:\n $package";
         
 		// Check if name has been entered
 		if (!$_POST['name']) {
@@ -153,10 +154,10 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
                         <a class="page-scroll" href="../index.html#testimonials">Testimonials</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="booking.php#booking">Booking</a>
+                        <a class="page-scroll" href="#booking">Booking</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
+                        <a class="page-scroll" href="contact.php#contact">Contact</a>
                     </li>
                 </ul>
             </div>
@@ -169,12 +170,12 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
     <header style="background-image:url(../img/header-bg.jpg);">
         <div class="container">
             <div class="intro-text">
-                <h2 id="intro" style="color:#fed136;" class="intro-lead-in">GET IN TOUCH WITH US</h2>
+                <h2 id="intro" style="color:#fed136;" class="intro-lead-in">BOOK A LESSON</h2>
                 <!-- <a href="#services" class="page-scroll btn btn-xl">Tell Me More</a> -->
             </div>
         </div>
     </header>
-	
+
   	<div class="container">
   		<div class="row">
   			<div class="col-md-6 col-md-offset-3">
@@ -183,44 +184,58 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 							<?php echo $result; ?>	
 						</div>
 					</div>
-  				<h1 class="page-header text-center">Contact Form</h1>
+  				<h1 class="page-header text-center">Booking Form</h1>
 				<form class="form-horizontal" role="form" method="post" action="index.php">
 					<div class="form-group">
-						<label for="name" class="col-sm-2 control-label">Name</label>
+						<label for="name" class="col-sm-2">Name</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="name" name="name" placeholder="First & Last Name" value="<?php echo htmlspecialchars($_POST['name']); ?>">
 							<?php echo "<p class='text-danger'>$errName</p>";?>
 						</div>
 					</div>					
-                    			<div class="form-group">
-						<label for="suburb" class="col-sm-2 control-label">Suburb</label>
+                    <div class="form-group">
+						<label for="suburb" class="col-sm-2">Suburb</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="suburb" name="suburb" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['suburb']); ?>">
 							<?php echo "<p class='text-danger'>$errSuburb</p>";?>
 						</div>
 					</div>
-                    			<div class="form-group">
-						<label for="phone" class="col-sm-2 control-label">Phone</label> 
+                    <div class="form-group">
+						<label for="phone" class="col-sm-2">Phone</label> 
 						<div class="col-sm-10">	
-							<input type="text" class="form-control" id="phone" name="phone" placeholder="0412345678" value="<?php echo htmlspecialchars($_POST['phone']); ?>">
+							<input type="text" class="form-control" id="phone" name="phone" placeholder="0412 345 678" value="<?php echo htmlspecialchars($_POST['phone']); ?>">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="email" class="col-sm-2 control-label">Email</label>
+						<label for="email" class="col-sm-2">Email</label>
 						<div class="col-sm-10">	
 							<input type="text" class="form-control" id="email" name="email" placeholder="you@example.com" value="<?php echo htmlspecialchars($_POST['email']); ?>">
 							<?php echo "<p class='text-danger'>$errEmail</p>";?>
 						</div>
 					</div>
+                    <div class="form-group">
+				        <label for="date" class="col-sm-2">Preferred Lesson Date:</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="date" name="date" value="<?php echo htmlspecialchars($_POST['date']); ?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="package" class="col-sm-2">I want to book...</label>
+                        <div class="col-sm-10">
+                        <select id="package" class="form-control" name="package" value="<?php echo htmlspecialchars($_POST['package']); ?>">
+                            <option value="single">Single 60 Minute Lesson $65</option>
+                            <option value="single90">Single 90 Minute Lesson $95</option>
+                            <option value="new2thewheel">New to the Wheel Pack $315</option>
+                            <option value="sdttp">Same Day Train &amp; Test Pack $270</option>
+                            <option value="ttp1">Train &amp; Test Pack 1 $525</option>
+                            <option value="ttp2">Train &amp; Test Pack 2 $550</option>
+                            <option value="ttp3">Train &amp; Test Pack 3 $740</option>
+                            <option value="olcp">Overseas License Conversion Pack $590</option>
+                        </select>
+                    </div>
+                    </div>
 					<div class="form-group">
-						<label for="message" class="col-sm-2 control-label">Message</label>
-						<div class="col-sm-10">
-							<textarea class="form-control" rows="4" name="message"><?php echo htmlspecialchars($_POST['message']);?></textarea>
-							<?php echo "<p class='text-danger'>$errMessage</p>";?>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="human" class="col-sm-2 control-label">2 + 3 = ?</label>
+						<label for="human" class="col-sm-2">2 + 3 = ?</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="human" name="human" placeholder="Your Answer">
 							<?php echo "<p class='text-danger'>$errHuman</p>";?>
@@ -234,9 +249,9 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 				</form> 
 			</div>
 		</div>
-	</div>   
-      
-<script src="../vendor/jquery/jquery.min.js"></script>
+	</div>  
+    
+    <script src="../vendor/jquery/jquery.min.js"></script>
 <script type="text/javascript">var submitted=false;</script>
 <script type="text/javascript">
 $('#gform').on('submit', function(e) {
@@ -258,3 +273,4 @@ $('#gform').on('submit', function(e) {
 
 </body>
 </html>
+

@@ -170,48 +170,86 @@ if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
     <header style="background-image:url(../img/header-bg.jpg);">
         <div class="container">
             <div class="intro-text">
-                <h2 id="intro" style="color:#fed136;" class="intro-lead-in">GET IN TOUCH WITH US</h2>
+                <h2 id="intro" style="color:#fed136;" class="intro-lead-in">BOOK A LESSON</h2>
                 <!-- <a href="#services" class="page-scroll btn btn-xl">Tell Me More</a> -->
             </div>
         </div>
     </header>
 
-    <div class="col-lg-12 text-center">
-    <h2>Booking form</h2>
-        <p class="section-subheading text-muted">To book a lesson time, fill out your details below and we'll be in touch to confirm the availability of your preferred date.</p>
-    </div>
-    <div id="booking" style="width: 500px; margin: 0 auto; margin-left: auto; margin-right: auto;">
-        <div>
-        <form method='POST' enctype="text/plain" action="booking.php" onsubmit="submitted=true;">
-            <label><h4 class="service-heading">Name:</h4></label><br>
-            <input class="form-control" type="text" name="name" id="name" required autofocus placeholder="Name"><br>
-            <label><h4 class="service-heading">Suburb:</h4></label><br>
-            <input class="form-control" type="text" name="suburb" id="suburb"  required placeholder="Suburb"><br>
-            <label><h4 class="service-heading">Phone:</h4></label><br>
-            <input class="form-control" type="text" name="phone" id="phone" required placeholder="Phone Number"><br>
-            <label><h4 class="service-heading">Email:</h4></label><br>
-            <input class="form-control" type="text" name="email" id="email"  required placeholder="Email"><br>
-            <label><h4 class="service-heading">Preferred Lesson Date:</h4></label><br>
-            <input type="date" name="date" id="date"><br>
-            <label><h4 class="service-heading">I want to book...</h4></label><br>
-            <select name="package">
-                <option value="single">Single 60 Minute Lesson $65</option>
-                <option value="single90">Single 90 Minute Lesson $95</option>
-                <option value="new2thewheel">New to the Wheel Pack $315</option>
-                <option value="sdttp">Same Day Train &amp; Test Pack $270</option>
-                <option value="ttp1">Train &amp; Test Pack 1 $525</option>
-                <option value="ttp2">Train &amp; Test Pack 2 $550</option>
-                <option value="ttp3">Train &amp; Test Pack 3 $740</option>
-                <option value="olcp">Overseas License Conversion Pack $590</option>
-            </select>
-            <br>
-            <br>
-                        <div class="col-lg-12 text-center">
-                <input class="btn btn-primary" style="margin: 0 auto" type="submit" value="Book">
-            </div>
-        </form>
-        </div><br><br>
-    </div>
+  	<div class="container">
+  		<div class="row">
+  			<div class="col-md-6 col-md-offset-3">
+                    <div class="form-group">
+						<div class="col-sm-10 col-sm-offset-2">
+							<?php echo $result; ?>	
+						</div>
+					</div>
+  				<h1 class="page-header text-center">Booking Form</h1>
+				<form class="form-horizontal" role="form" method="post" action="index.php">
+					<div class="form-group">
+						<label for="name" class="col-sm-2 control-label">Name</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="name" name="name" placeholder="First & Last Name" value="<?php echo htmlspecialchars($_POST['name']); ?>">
+							<?php echo "<p class='text-danger'>$errName</p>";?>
+						</div>
+					</div>					
+                    			<div class="form-group">
+						<label for="suburb" class="col-sm-2 control-label">Suburb</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="suburb" name="suburb" placeholder="i.e Welland" value="<?php echo htmlspecialchars($_POST['suburb']); ?>">
+							<?php echo "<p class='text-danger'>$errSuburb</p>";?>
+						</div>
+					</div>
+                    <div class="form-group">
+						<label for="phone" class="col-sm-2 control-label">Phone</label> 
+						<div class="col-sm-10">	
+							<input type="text" class="form-control" id="phone" name="phone" placeholder="0412345678" value="<?php echo htmlspecialchars($_POST['phone']); ?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="email" class="col-sm-2 control-label">Email</label>
+						<div class="col-sm-10">	
+							<input type="text" class="form-control" id="email" name="email" placeholder="you@example.com" value="<?php echo htmlspecialchars($_POST['email']); ?>">
+							<?php echo "<p class='text-danger'>$errEmail</p>";?>
+						</div>
+					</div>
+                    <div class="form-group">
+				        <label for="date" class="col-sm-2 control-label">Preferred Lesson Date:</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="date" name="date" value="<?php echo htmlspecialchars($_POST['date']); ?>">
+                        </div>
+                    </div>
+                    <div>
+                        <label><h4 class="service-heading">I want to book...</h4></label><br>
+                        <div class="col-sm-10">
+                        <select id="package" name="package" value="<?php echo htmlspecialchars($_POST['package']); ?>">
+                            <option value="single">Single 60 Minute Lesson $65</option>
+                            <option value="single90">Single 90 Minute Lesson $95</option>
+                            <option value="new2thewheel">New to the Wheel Pack $315</option>
+                            <option value="sdttp">Same Day Train &amp; Test Pack $270</option>
+                            <option value="ttp1">Train &amp; Test Pack 1 $525</option>
+                            <option value="ttp2">Train &amp; Test Pack 2 $550</option>
+                            <option value="ttp3">Train &amp; Test Pack 3 $740</option>
+                            <option value="olcp">Overseas License Conversion Pack $590</option>
+                        </select>
+                    </div>
+                    </div>
+					<div class="form-group">
+						<label for="human" class="col-sm-2 control-label">2 + 3 = ?</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="human" name="human" placeholder="Your Answer">
+							<?php echo "<p class='text-danger'>$errHuman</p>";?>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-10 col-sm-offset-2">
+							<input id="submit" name="submit" type="submit" value="Send" class="btn btn-primary">
+						</div>
+					</div>
+				</form> 
+			</div>
+		</div>
+	</div>  
     
     <script src="../vendor/jquery/jquery.min.js"></script>
 <script type="text/javascript">var submitted=false;</script>
