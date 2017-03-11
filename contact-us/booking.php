@@ -8,12 +8,12 @@
         $date = date("Y-m-d", strtotime($_POST['date']));
 		$package = $_POST['package'];
 		$human = intval($_POST['human']);
-		$to = 'ransty.jr@gmail.com'; 
+		$to = 'angelodb72@yahoo.com.au'; 
 		$subject = $name . ' wants to book a lesson!';
 		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
     'Reply-To: ' .$email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();		
-		$body ="From: $name\n Suburb: $suburb\n Phone Number: $phone\n E-Mail: $email\n Preferred Lesson Date: $date\n Pack selected: $package \n \n *** This is an automatically generated email, pressing reply will contact the customer ***";
+		$body ="From: $name\n Suburb: $suburb\n Phone Number: +61$phone\n E-Mail: $email\n Preferred Lesson Date: $date\n Pack selected: $package \n \n *** This is an automatically generated email, pressing reply will contact the customer ***";
         
 		// Check if name has been entered
 		if (!$_POST['name']) {

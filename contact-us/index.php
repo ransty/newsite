@@ -7,12 +7,12 @@
 		$phone = $_POST['phone'];
 		$message = $_POST['message'];
 		$human = intval($_POST['human']);
-		$to = 'ransty.jr@gmail.com'; 
+		$to = 'angelodb72@yahoo.com.au'; 
 		$subject = $name . ' has an enquiry';
 		$headers = 'From:  ' . $keano . '<info@learnpassdrive.com.au>' . "\r\n" .
     'Reply-To: ' .$email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();		
-		$body ="From: $name\n Suburb: $suburb\n E-Mail: $email\n Phone Number: $phone\n Message:\n $message \n \n *** This is an automatically generated email, pressing reply will contact the customer ***";
+		$body ="From: $name\n Suburb: $suburb\n E-Mail: $email\n Phone Number: +61$phone\n Message:\n $message \n \n *** This is an automatically generated email, pressing reply will contact the customer ***";
         
 		// Check if name has been entered
 		if (!$_POST['name']) {
