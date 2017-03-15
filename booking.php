@@ -36,7 +36,7 @@
 // If there are no errors, send the email
 if (!$errName && !$errEmail && !$errMessage && !$errHuman) {
 	if (mail ($to, $subject, $body, $headers)) {
-		$result='<div class="alert alert-success">Thank You! I will be in touch as soon as possible.</div>';
+		$result='<div class="alert alert-success">Thank you for your email. We will be in touch as soon as possible to confirm your booking time.</div>';
 	} else {
 		$result='<div class="alert alert-danger">Sorry there was an error sending your message. Please try again later.</div>';
 	}
