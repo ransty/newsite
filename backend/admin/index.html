@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Result Screen</title>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script href="index.html"></script>
+    <link rel="stylesheet" type="text/css"   href="http://115.112.118.252/VirtualEST//assets/css/health.css" />
+    <link rel="stylesheet" type="text/css" href="http://115.112.118.252/VirtualEST//assets/css/style.css" />
+
+    <style>
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            width: 100px;
+            height: 10px;
+            padding: 8px;
+            font: 10px sans-serif;
+            background: #ffff99;
+            border: solid 1px #aaa;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        sub {
+            font-size: 75%;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+            bottom: -0.25em;
+        }
+        .small-input {
+            width: 50%;
+        }
+        .axis path, .axis line {
+            fill: none;
+            stroke: #777;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: 'Arial';
+            font-size: 13px;
+        }
+        .tick{
+            stroke-dasharray: 1, 2;
+        }
+        .bar{
+            outline-style: solid;
+            outline-width: thin;
+            outline-color: antiquewhite;
+            fill: steelblue;
+        }
+        circle {
+            fill: steelblue;
+        }
+    </style>
+
+    <script type="text/javascript">
+    	window.onload = function() {
+    	    $("#vo2Max_value").val(36.5);
+    	   changeMean();
+    	};
+    	$(document).ready(function() {
+            var divHeight = $('.contain').height();
+            $('.side_menu').css('height', divHeight+'px');
+
+            $(".v_person").fadeTo( "slow" , 1, function() {});
+
+        });
+    	$(document).on('click','#anaerobic_strength, #anaerobic_capacity, #aerobic_fitness', function(){
+    		$(".sub_menu").hide();
+    		$(this).next(".sub_menu").toggle().animate({left: '274px', opacity:'1'});
+    	});
+    	$(document).on('click','#VO2max', function(){
+    		$(".inner_sub_menu").slideUp();
+    		$(this).next(".inner_sub_menu").toggle().animate({left: '274px', opacity:'1'});
+    	});
+    	$(document).on('click','.menu_btn', function(){
+    		$(this).toggleClass("active");
+    		$(".drop_main").toggle().animate({left: '76px', opacity:'1'});
+    	});
+    	$(document).on('click','.info_icon_btn', function(){
+    		$(".info_block").toggle();
+    		$(".overlay").toggle();
+    	});
+    	$(document).on('click','.close', function(){
+    		$(".info_block").toggle();
+    		$(".overlay").toggle();
+    	});
+    	$(document).on('click','.print_icon_toggle_btn', function(){
+    		$(".print_icon_toggle").toggle();
+    	});
+    	$(document).on('click','.vitual_btn', function(){
+        $("#vpvirticaljumpgen").attr("action", "http://115.112.118.252/VirtualEST/index.php/Fitness/FitnessVirtualpersonGeneration");
+            $("#vpvirticaljumpgen").submit();
+    	$(".v_person").fadeTo( "slow" , 1, function() {});
+    	});
+    	$(document).on('click','.discart', function(){
+    		$(".v_person").fadeTo( "slow" , 0, function() {});
+    	});
+    	$(document).on('click','.v_btn a', function(){
+    		$(this).text(function(i, v){
+                   return v === 'Click To Know' ? 'Hide Detail' : 'Click To Know'
+            });
+    		$(".v_detail").slideToggle();
+    	});
+    </script>
+</head>
+
+<body>
+    <div class="header">
+        <div class="wrapper">
+            <div class="head_left">Exercise Science Toolkit</div>
+            <div id="officialname" class="head_right">Patient Name: Test User<input name="submitMedical" value="" title="edit client details" class="profile_edit_btn" type="submit" /></div>
+        </div>
+    </div>
+
+    <div class="orng_container green_container">
+        <div class="wrapper">
+            <div class="orng_box_btn f_left">
+                <a href="#" id="exit"><img src="http://115.112.118.252/VirtualEST//assets/images/back_green.jpg"></a>
+            </div>
+            <div class="orng_box_head f_left">
+                <h3>Fitness Testing</h3>
+                <p>Anaerobic strength and power / vertical jump</p>
+            </div>
+
+            <div class="orng_box_btn f_right">
+                <a href="#" onclick="window.print(); return false;"><img src="http://115.112.118.252/VirtualEST//assets/images/print_green.jpg"></a>
+            </div>
+
+            <div class="orng_box_btn f_right">
+                <a href="#" class="info_icon_btn"><img src="http://115.112.118.252/VirtualEST//assets/images/info_green.jpg"></a>
+            </div>
+
+            <div class="orng_box_btn f_right">
+                <form name="vpform" id="vpvirticaljumpgen" method="post">
+                    <a href="#" class="vitual_btn"><img src="http://115.112.118.252/VirtualEST//assets/images/virtual_icon.png" style="margin-top: 12px;"></a>
+                    <input type="hidden" name="vptype" value="vjump_vp" >
+                </form>
+            </div>
+
+            <div class="vitual_div"></div>
+            <div class="overlay">&nbsp;</div>
+
+            <div class="info_block">
+                <div class="info_block_head">Vertical jump test</div>
+                <p>The vertical jump test is a standard countermovement jump without a run-up. Values are entered in cm and can be entered as decimal values [such as 43.5 cm]. Sporting norms are based on reported values from a range of published scientific reports and other references such as textbooks in sport and exercise science.
+                However, some sports have very few datapoints and this means there is less reliability for these sports. If you hav
+                know of elite-level normative data then please contact the author of this program - Professor Kevin Norton - to advise him of the source of the normative data or send them to his email address [k.norton@unisa.edu.au].
+                </p>
+                <div class="info_block_foot">
+                    <a href="#" class="lite_btn grey_btn f_right close">Close</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="wrapper">
+
+        <!-- Form begins -->
+        <form action="http://115.112.118.252/VirtualEST/index.php/Fitness/saveClientVerticalJumpInfo" method="post" accept-charset="utf-8" id="myform" name="myform">
+            <div style="display:none">
+                <input name="userid" value="1903" type="hidden" />
+            </div>
+
+            <div class="contain">
+                <div class="side_menu" style="height: 1070px;">
+                    <a href="#" class="menu_btn"></a>
+                    <div class="drop_main" style="position: absolute; top:0; display:none;">
+                        <ul>
+                            <li><a href="#" id="anaerobic_strength"><img src="index_files/icon_anaerobic.png"> Anaerobic strength and power</a>
+                                <ul class="sub_menu">
+                                    <li><a href="http://115.112.118.252/VirtualEST/index.php/Fitness/vertical_jump">vertical jump</a></li>
+                                    <li><a href="http://115.112.118.252/VirtualEST/index.php/Fitness/flight_time">flight:contact time</a></li>
+                                    <li><a href="http://115.112.118.252/VirtualEST/index.php/Fitness/peak_power">peak power [W]</a></li>
+                                    <li><a href="http://115.112.118.252/VirtualEST/index.php/Fitness/strength">strength tests</a></li>
+
+                                </ul>
+                            </li>
+
+                            <li><a href="#" id="anaerobic_capacity"><img src="index_files/icon_capacity.png"> Anaerobic capacity</a>
+                                <ul class="sub_menu">
+                                    <li><a href="http://115.112.118.252/VirtualEST/index.php/Fitness/total_work_done_30s">30 s total work [kJ]</a></li>
+                                </ul>
+                            </li>
+
+                            <li><a href="#" id="aerobic_fitness"><img src="index_files/icon_fitness.png"> Aerobic fitness</a>
+                                <ul class="sub_menu">
+                                    <li><a href="#" id="VO2max">VO<sub>2max</sub> [mL/kg/min]</a>
+                                        <ul class="inner_sub_menu">
+                                            <li><a href="http://115.112.118.252/VirtualEST/index.php/Fitness/submaximal_test">submaximal tests</a></li>
+                                            <li><a href="http://115.112.118.252/VirtualEST/index.php/Fitness/shuttle_test">20 m shuttle test</a></li>
+                                            <li><a href="http://115.112.118.252/VirtualEST/index.php/Fitness/v02max_test">measured VO<sub>2max</sub></a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="http://115.112.118.252/VirtualEST/index.php/Fitness/lactate_threshold">lactate threshold</a></li>
+                                    <li><a href="http://115.112.118.252/VirtualEST/index.php/Fitness/maod">maod test</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+    	<!--Start right -->
+            <div id="screen1" style="display: inline" class="right-section right-section_new">
+                <div class="right-head">MAOD Laboratory</div>
+                <div id="input-vals">
+                    <label for="value"><strong>Body Mass (kg)</strong></label>
+                    <input id="bodymass" class="cus-input" autofocus oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                    <input class="lite_btn btn_green" onclick="setMass(document.getElementById('bodymass').value)" name="plot" value="Set" type="button" />
+                    <label for="name"><strong>Name</strong></label>
+                    <input id="name" class="cus-input" />
+                    <input class="lite_btn btn_green" onclick="setName(document.getElementById('name').value)" name="plot" value="Set name" type="button" />
+                    <script type="text/javascript">
+                        var lol = document.getElementById('wl1');
+                        function kk() {
+                            alert(lol.value);
+                        }
+                    </script>
+                </div>
+                <br>
+                <div id="results" style="text-align: center; "><strong>Results:</strong></div>
+
+
+                <div class="field_row">
+                    <ul class="field_24" id="workload" style="position: absolute;">
+                        <label style="margin: 0; padding: 0">Workload</label>
+                        <li><input class="x" style="width: 50px;" tabindex=1 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="x" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="x" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="x" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="x" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="x" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="x" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="x" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="x" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="x" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="x" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="x" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li></li>
+                    </ul>
+
+                    <ul id="vo2" class="field_24" style="position: absolute; margin-left: 80px">
+                        <label style="margin: 0; padding: 0;">VO2 Max</label>
+                        <li><input class="y" style="width: 50px;" tabindex=2 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                    </ul>
+                    <p id="datawrap" style="position: absolute; margin-left: 115px; margin-top: 250px; transform: rotate(270deg);"></p>
+
+                    <input class="lite_btn btn_green" onclick="s1Input()" name="plot" value="Plot Graph" type="button" style="position: absolute; margin-top: 370px; width: 122px"/>
+                    <input class="lite_btn btn_green" onclick="clearGraph('visualisation')" name="clear" value="Clear Graph" type="button" style="position: absolute; margin-top: 420px; width: 122px" />
+                    <input class="lite_btn btn_green" name="move" onclick="changeScreens()" value="Next Screen" type="button" style="position: absolute; margin-top: 470px; width: 122px" />
+
+                    <svg id="visualisation" width="700" height="500" style="margin-left: 160px"></svg>
+
+                    <p id="dataswap" style="text-align: center;"></p>
+
+                    <br />
+                    <hr>
+                    <h4 style="text-align: center;">DEBUG INFO</h4>
+                    <p id="datagrab" style="display: inline-block;"></p>
+
+                    <script src='https://d3js.org/d3.v3.min.js'></script>
+                </div>
+            </div>
+
+            <div id="screen2" name="screen2" style="display: none" class="right-section right-section_new">
+                <div class="right-head">MAOD Laboratory</div>
+                <div id="input-vals">
+                    <label for="value"><strong>Time interval</strong></label>
+                    <input id="testing" class="cus-input" style="width: 40px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                    <input class="lite_btn btn_green" onclick="kk(document.getElementById('testing').value)" name="plot" value="Set" type="button" />
+                    <label for="Vmax"><strong>Estimated V02max</strong></label>
+                    <input id="Vmax" style="width: 40px;"/>
+                    <label for="supermaximal"><strong>Supermaximal workrate</strong></label>
+                    <input id="supermaximal" style="width: 40px;" />
+                    <!--<input class="lite_btn btn_green" onclick="reqSpeed()" name="plot" value="Calculate" type="button" />-->
+                    <label for="reqworkload"><strong>Required Speed/Power</strong></label>
+                    <input id="reqworkload" style="width: 40px" />
+                </div>
+
+                <br />
+                <div id="results" style="text-align: center; "><strong>Results:</strong></div>
+
+                <div class="field_row">
+                    <ul class="field_24" id="interval" style="position: absolute;">
+                        <label style="margin: 0; padding: 0;">Interval</label>
+                        <label style="margin: 0; padding: 0; text-align: center;">(s)</label>
+                        <li><input disabled class="x2" style="width: 50px;" value="1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="3" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="4" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="5" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="6" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="7" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="8" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="9" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="10" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="11" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="12" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="13" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="14" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="15" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="16" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="17" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input disabled class="x2" style="width: 50px;" value="18" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+
+                        <li></li>
+                    </ul>
+
+                    <ul id="vo2" class="field_24" style="position: absolute; margin-left: 80px">
+                        <label style="margin: 0; padding: 0;">V02 Max</label>
+                        <label style="margin: 0; padding: 0; text-align: center;">(L/min)</label>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                        <li><input class="y2" style="width: 50px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
+                    </ul>
+                    <p id="datawrap2" style="position: absolute; margin-left: 115px; margin-top: 250px; transform: rotate(270deg);"></p>
+                    <svg id="visualisation2" width="700" height="500" style="position: relative; margin-left: 160px"></svg>
+                    <p id="dataswap2" style="text-align: center;"></p>
+
+                    <input class="lite_btn btn_green" onclick="s2Input()" name="plot" value="Plot Graph" type="button" style="position: absolute; width: 122px" />
+                    <input class="lite_btn btn_green" onclick="clearGraph('visualisation2')" name="clear" value="Clear Graph" type="button" style="position: absolute; margin-left: 128px;   width: 122px" />
+                    <input class="lite_btn btn_green" id="move" name="move" onclick="changeScreens()" value="Next Screen" type="button" style="position: absolute; margin-left: 251px;" />
+                    <br>
+
+
+
+
+                    <br />
+                    <hr />
+                    <h4 style="text-align: center;">DEBUG INFO</h4>
+                    <p id="datagrab2" style="display: inline-block;"></p>
+
+                    <script src='https://d3js.org/d3.v3.min.js'></script>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="chart.js"></script>
+</body>
+</html>
