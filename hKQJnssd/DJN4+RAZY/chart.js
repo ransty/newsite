@@ -64,6 +64,13 @@ function getList(htmlClass) {
   }
 }
 
+function freeButton() {
+    // re-enables the button
+    $("#nxtbtn").prop('disabled', false);
+    $("#nxtbtn").removeClass('btn_gray');
+    $("#nxtbtn").addClass('btn_green');
+}
+
 /*
 * Removes invalid input, i.e blank spots
 * TODO: More error checking, this isn't sufficient enough for the program
@@ -142,6 +149,7 @@ function s1Input() {
   }
   count = (x.length == y.length) ? x.length : alert("X and Y list does not match!");
   InitChart();
+    freeButton();
 }
 
 
