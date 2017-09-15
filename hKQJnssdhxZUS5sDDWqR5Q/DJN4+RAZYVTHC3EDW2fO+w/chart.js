@@ -302,7 +302,7 @@ function secondGraph() {
       oxygenDeficit();
 
            // now lets write all important data to p
-           $("#results").text("MOAD: " + maod);
+           $("#results2").text("MOAD: " + maod);
            $("#dataswap2").text("Time Interval (s)");
            $("#datawrap2").text("V02 Max (L/Min)");
 
