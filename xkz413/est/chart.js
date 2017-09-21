@@ -18,16 +18,47 @@ var yFinal = [];
 var lineY1;
 var lineY2;
 var lineX1;
-var lineX;
 var dataset = [];
-var interval;
-var barwidth;
+
+/* Second screen variable */
+var numIntervals;
+var intervalLength;
 var vo2max;
 var workrate;
 var oxygenRequired;
 var bodyMass;
 var maod = 0;
+var totalTime = 180;
+var O2req;
 
+$('.x').keydown(function (e) {
+    if (e.which === 13) {
+        var index = $('.x').index(this) + 1;
+        $('.x').eq(index).focus();
+    }
+});
+
+$('.y').keydown(function (e) {
+    if (e.which === 13) {
+        var index = $('.y').index(this) + 1;
+        $('.y').eq(index).focus();
+    }
+});
+
+$('.y2').keydown(function (e) {
+    if (e.which === 13) {
+        var index = $('.y2').index(this) + 1;
+        $('.y2').eq(index).focus();
+    }
+});
+
+/*
+* Sets patient name
+*/
+function setName(name) {
+  var d = document.getElementById('patientname');
+  d.innerHTML = "Patient Name: " + name + "<input name='submitMedical' value='' title='edit client details' class='profile_edit_btn' type='submit' />";
+}
 
 function changeScreens() {
   var screen1 = document.getElementById("screen1");
@@ -64,6 +95,9 @@ function getList(htmlClass) {
   }
 }
 
+/*
+* Enables 'Next Screen' button on screen 1
+*/
 function freeButton() {
     // re-enables the button
     $("#nxtbtn").prop('disabled', false);
@@ -113,77 +147,38 @@ function getMinimumValue(list) {
 }
 
 /*
-* Button call from HTML, starts getting data from form
+* Clears the graph (jQuery)
+* NOTE: jQuery must be loaded before this script for this to work
 */
-function s1Input() {
-  clearGraph('visualisation');
-  getList('x');
-  getList('y');
-  // get the sum of xgrabInput
-  sumX = sum(x);
-  // get the sum of y
-  sumY = sum(y);
-  // get the multiplication sum of x[i] * x[i]
-  sumX2 = multiplySum(x, x);
-  // get the multiplication sum of x[i] * y[i]
-  sumXY = multiplySum(x, y);
-  // sum of y * y
-  sumY2 = multiplySum(y, y);
-  // calculate the slope of the regression line
-  slope = (x.length * sumXY - sumX * sumY) / (x.length * sumX2 - sumX * sumX);
-  // calculate the x intercept for the regression line
-  intercept = (sumY - slope * sumX) / x.length;
-  // get the maximum x value
-  lineX2 = getMaximumValue(x);
-  // get the minimum x value
-  lineX1 = getMinimumValue(x);
-  // get the maximum value of y
-  maxY = getMaximumValue(y);
-  // calculate the regression of 0
-  lineY1 = regression(0);
-  // calculate the regression of the maximum x value
-  lineY2 = regression(lineX2);
-  // set dataset for the scatter-dots
-  for (var i = 0; i <  x.length; i++) {
-     dataset.push([x[i], y[i]]);
-  }
-  count = (x.length == y.length) ? x.length : alert("X and Y list does not match!");
-  InitChart();
-    freeButton();
-}
-
-
-function oxygenDeficit() {
-  //console.log("HELLO");
-  var overall = parseFloat(180 * (vo2max * workrate / 100));
-  console.log("Overall: " +  overall);
-  //console.log(overall);
-  var oxygenconsumed = 0;
-  for (var i = 0; i < y.length; i++) {
-    oxygenconsumed += barwidth * y[i];
-  }
-  console.log("Oxygen Consumed: " + oxygenconsumed);
-  //console.log(overall - oxygenconsumed);
-  //console.log("Interval " + interval);
-  var deficit = (overall - oxygenconsumed) / (60 / barwidth);
-  console.log("Deficit " + deficit);
-  var rval = deficit * 1000;
-  console.log("rval : " + rval);
-  // milliters 02 per kg
-  maod = rval / bodyMass;
-}
-
-function s2Input() {
-  reqSpeed();
-  clearGraph('visualisation2');
-    getList('x2');
-    getList('y2');
-
-    for (var i = 0; i <  x.length; i++) {
-        dataset[i] = {'x': x[i], 'y': y[i]};
-   }
-
-  secondGraph();
+function clearGraph(string) {
+  console.log("#" + string + "");
+  $("#" + string + "").empty();
+  // clear all variables
+  xInput = 0;
+  yInput = 0;
+  x = [];
+  y = [];
+  ny = 0;
+  nx = 0;
+  count = 0;
+  sumX = 0.0;
+  sumY = 0.0;
+  sumY2 = 0;
+  sumX2 = 0;
+  sumXY = 0;
+  //slope = 0.0;
+  //intercept = 0;
+  xFinal = [];
+  yFinal = [];
+  lineY1 = 0;
+  lineY2 = 0;
+  lineX1 = 0;
+  lineX = 0;
+  dataset = [];
+  $("#xAxisLabel").text("");
+  $("#yAxisLabel").text("");
+  $("#xAxisLabel2").text("");
+  $("#yAxisLabel2").text("");
 }
 
 /*
@@ -215,175 +210,128 @@ function regression(x) {
   return (slope * x) + intercept;
 }
 
-function secondGraph() {
-  var margin = {top: 20, right: 20, bottom: 20, left: 50}
-        , width = 700 - margin.left - margin.right
-        , height = 500 - margin.top - margin.bottom;
-
-      var x = d3.scale.linear()
-                .domain([0, 180])
-                .range([ 0, width ]);
-
-      var y = d3.scale.linear()
-      	      .domain([0, 8])
-      	      .range([ height, 0 ]);;
-
-
-      var chart = d3.select('#visualisation2')
-  	.append('svg:svg')
-  	.attr('width', width + margin.right + margin.left)
-  	.attr('height', height + margin.top + margin.bottom)
-  	.attr('class', 'chart')
-
-      var main = chart.append('g')
-  	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-  	.attr('width', width)
-  	.attr('height', height)
-  	.attr('class', 'main')
-
-      // draw the x axis
-      var xAxis = d3.svg.axis()
-  	   .scale(x)
-  	    .orient('bottom')
-        .ticks(5)
-        .tickValues(d3.range(0, width, 15));
-
-    main.append('g')
-  	.attr('transform', 'translate(0,' + height + ')')
-  	.attr('class', 'main axis date')
-  	.call(xAxis);
-
-      // draw the y axis
-      var yAxis = d3.svg.axis()
-  	.scale(y)
-  	.orient('left');
-
-      main.append('g')
-  	.attr('transform', 'translate(0,0)')
-  	.attr('class', 'main axis date')
-  	.call(yAxis);
-
-        var g = main.append("svg:g");
-
-
-    g.selectAll(".bar")
-    .data(dataset)
-    .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.x - barwidth); })
-      .attr("y", function(d) { return y(d.y); })
-      .attr("width", width/interval)
-      .attr("height", function(d) { return height - y(d.y); });
-
-
-
-    var lineData = [{
-    'x': 0,
-    'y': (vo2max*workrate/100)
-  }, {
-    'x': 180,
-    'y': (vo2max*workrate/100)
-  }];
-
-
-    var lineFunc = d3.svg.line()
-           .x(function(d) {
-             return x(d.x);
-           })
-           .y(function(d) {
-             return y(d.y);
-           })
-           .interpolate('linear');
-              g.append('svg:path')
-           .attr('d', lineFunc(lineData))
-           .attr('stroke', 'red')
-           .attr('stroke-width', 2)
-           .attr('fill', 'none');
-
-           g.append("text")
-      .attr("transform", "translate(5,"+y(lineData[1].y + 0.2)+")")
-      .attr("dy", ".35em")
-      .attr("text-anchor", "start")
-      .style("fill", "red")
-      .text("Oxygen Required " + (vo2max*workrate/100) + " (L/min)");
-
-      oxygenDeficit();
-
-           // now lets write all important data to p
-           $("#results2").text("MOAD: " + maod);
-           $("#dataswap2").text("Time Interval (s)");
-           $("#datawrap2").text("V02 Max (L/Min)");
-
-           //console.log("Oxygen Deficit is: " + oxygenDeficit());
+/*
+* Button call from HTML, starts getting data from form
+*/
+function s1Input() {
+  if (document.getElementById('bodymass').value == "") {
+    alert("Please enter a body mass (kg)");
+    throw new Error("Please enter a body mass");
+  }
+  setMass(document.getElementById('bodymass').value);
+  clearGraph('graphS1');
+  getList('x');
+  getList('y');
+  // get the sum of xgrabInput
+  sumX = sum(x);
+  // get the sum of y
+  sumY = sum(y);
+  // get the multiplication sum of x[i] * x[i]
+  sumX2 = multiplySum(x, x);
+  // get the multiplication sum of x[i] * y[i]
+  sumXY = multiplySum(x, y);
+  // sum of y * y
+  sumY2 = multiplySum(y, y);
+  // calculate the slope of the regression line
+  slope = (x.length * sumXY - sumX * sumY) / (x.length * sumX2 - sumX * sumX);
+  // calculate the x intercept for the regression line
+  intercept = (sumY - slope * sumX) / x.length;
+  // get the maximum x value
+  lineX2 = getMaximumValue(x);
+  // get the minimum x value
+  lineX1 = getMinimumValue(x);
+  // get the maximum value of y
+  maxY = getMaximumValue(y);
+  // calculate the regression of 0
+  lineY1 = regression(0);
+  // calculate the regression of the maximum x value
+  lineY2 = regression(lineX2);
+  // set dataset for the scatter-dots
+  for (var i = 0; i <  x.length; i++) {
+     dataset.push([x[i], y[i]]);
+  }
+  count = (x.length == y.length) ? x.length : alert("X and Y list does not match!");
+  firstGraph();
+    freeButton();
 }
 
 /*
 * Draw a chart (line regression) and display information
 * like x-intercept, y-intercept, slope etc
 */
-function InitChart() {
-  var margin = {top: 20, right: 20, bottom: 20, left: 50}
+function firstGraph() {
+    var margin = {top: 20, right: 20, bottom: 20, left: 50}
         , width = 700 - margin.left - margin.right
         , height = 500 - margin.top - margin.bottom;
 
-  var lineData = [{
-    'x': 0,
-    'y': lineY1
-  }, {
-    'x': lineX2,
-    'y': lineY2
-  }];
+    var lineData = [{
+        'x': 0,
+        'y': lineY1
+    }, {
+        'x': lineX2,
+        'y': lineY2
+    }];
 
-  var data = dataset;
+    var data = dataset;
 
-  var margin = {top: 20, right: 20, bottom: 20, left: 50}
-        , width = 700 - margin.left - margin.right
-        , height = 500 - margin.top - margin.bottom;
+    var x = d3.scale.linear()
+    .domain([0, lineX2 + 5])
+    .range([ 0, width ]);
 
-      var x = d3.scale.linear()
-                .domain([0, lineX2 + 5])
-                .range([ 0, width ]);
-
-      var y = d3.scale.linear()
-      	      .domain([0, 5])
-      	      .range([ height, 0 ]);;
+    var y = d3.scale.linear()
+    .domain([0, 5])
+    .range([ height, 0 ]);;
 
 
-      var chart = d3.select('#visualisation')
+    var chart = d3.select('#graphS1')
   	.append('svg:svg')
   	.attr('width', width + margin.right + margin.left)
   	.attr('height', height + margin.top + margin.bottom)
   	.attr('class', 'chart')
 
-      var main = chart.append('g')
+    var main = chart.append('g')
   	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
   	.attr('width', width)
   	.attr('height', height)
   	.attr('class', 'main')
 
-      // draw the x axis
-      var xAxis = d3.svg.axis()
-  	   .scale(x)
-  	    .orient('bottom');
+
+    // Draw the X-axis
+    var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient('bottom')
+    .innerTickSize(-height)
+    .outerTickSize(0)
+    .tickPadding(10);
+
 
     main.append('g')
   	.attr('transform', 'translate(0,' + height + ')')
   	.attr('class', 'main axis date')
   	.call(xAxis);
 
-      // draw the y axis
-      var yAxis = d3.svg.axis()
+    // Draw the Y-axis
+    var yAxis = d3.svg.axis()
   	.scale(y)
-  	.orient('left');
+  	.orient('left')
+    .innerTickSize(-width)
+    .outerTickSize(0)
+    .tickPadding(10);
 
-      main.append('g')
+
+    main.append('g')
   	.attr('transform', 'translate(0,0)')
   	.attr('class', 'main axis date')
+
   	.call(yAxis);
 
-      var g = main.append("svg:g");
+    // Draw line on right-side of graph
+    var yAxisRight = d3.svg.axis().outerTickSize(0).scale(y).orient("right").ticks(0);
+    main.append("g").attr("class", "y axis").attr("transform", "translate(" + width + ", 0)").call(yAxisRight);
 
-      g.selectAll("scatter-dots")
+    var g = main.append("svg:g");
+
+    g.selectAll("scatter-dots")
         .data(data)
         .enter().append("svg:circle")
             .attr("cx", function (d,i) { return x(d[0]); } )
@@ -394,34 +342,176 @@ function InitChart() {
               return d;
             });
 
-      var lineFunc = d3.svg.line()
-           .x(function(d) {
-             return x(d.x);
-           })
-           .y(function(d) {
-             return y(d.y);
-           })
-           .interpolate('linear');
-              g.append('svg:path')
-           .attr('d', lineFunc(lineData))
-           .attr('stroke', 'red')
-           .attr('stroke-width', 2)
-           .attr('fill', 'none')
-           .append("svg:title") // tooltip
-           .text(function(d) {
-             return "Y-Intercept: " + intercept + ", Slope: " + slope;
-           });
+    var lineFunc = d3.svg.line()
+    .x(function(d) {
+        return x(d.x);
+    })
+    .y(function(d) {
+        return y(d.y);
+    })
+    .interpolate('linear');
+    g.append('svg:path')
+        .attr('d', lineFunc(lineData))
+        .attr('stroke', 'red')
+        .attr('stroke-width', 2)
+        .attr('fill', 'none')
+        .append("svg:title") // tooltip
+        .text(function(d) {
+        return "Y-Intercept: " + intercept + ", Slope: " + slope;
+    });
 
-           //console.log("Oxygen Required: " + oxygenDeficit());
-           //console.log("Body mass oxygen: " + (oxygenRequired() * 1000 / bodyMass));
 
-           // now lets write all important data to p
-           $("#results").text("Y-Intercept: " + Math.round(intercept * 10000) / 10000 + ", X-Intercept: " + Math.round(((-intercept)/slope) * 10000) / 10000 + ", Slope: " + Math.round(slope * 10000) / 10000 + ", R^2: " + correlation() + ", Equation: Y = " + Math.round(slope * 10000) / 10000 + "X + " + Math.round(intercept * 10000) / 10000 );
-           $("#dataswap").text("Workload");
-           $("#datawrap").text("V02 Max (L/Min)");
+    // Results and labels to display on graph
+    $("#results").html("<div>R&sup2;= " + correlation() + ", Equation: Y = " + Math.round(slope * 1000) / 1000 + "X + " + Math.round(intercept * 1000) / 1000 + "</div>");
+    $("#xAxisLabel").text("Workload");
+    $("#yAxisLabel").text("V02 Max (L/Min)");
+}
 
+/*
+* Button call from HTML, starts getting data from form
+*/
+function s2Input() {
+  reqSpeed();
+  clearGraph('graphS2');
+    getList('x2');
+    getList('y2');
+
+    for (var i = 0; i <  x.length; i++) {
+        dataset[i] = {'x': x[i], 'y': y[i]};
+   }
+
+  secondGraph();
+}
+
+/*
+* Draws graph for second screen
+*/
+function secondGraph() {
+  var margin = {top: 20, right: 20, bottom: 20, left: 50}
+        , width = 700 - margin.left - margin.right
+        , height = 500 - margin.top - margin.bottom;
+
+    var x = d3.scale.linear()
+    .domain([0, 180])
+    .range([ 0, width ]);
+
+    var y = d3.scale.linear()
+    .domain([0, 6])
+    .range([ height, 0 ]);;
+
+    var chart = d3.select('#graphS2')
+  	.append('svg:svg')
+  	.attr('width', width + margin.right + margin.left)
+  	.attr('height', height + margin.top + margin.bottom)
+  	.attr('class', 'chart')
+
+    var main = chart.append('g')
+  	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+  	.attr('width', width)
+  	.attr('height', height)
+  	.attr('class', 'main')
+
+    // Draw the X-axis
+    var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient('bottom')
+    .ticks(5)
+    .tickValues(d3.range(0, width, 15))
+    .innerTickSize(-height)
+    .outerTickSize(0)
+    .tickPadding(10);
+
+    main.append('g')
+  	.attr('transform', 'translate(0,' + height + ')')
+  	.attr('class', 'main axis date')
+  	.call(xAxis);
+
+    // Draw the Y-axis
+    var yAxis = d3.svg.axis()
+  	.scale(y)
+  	.orient('left')
+    .innerTickSize(-width)
+    .outerTickSize(0)
+    .tickPadding(10);
+
+    main.append('g')
+  	.attr('transform', 'translate(0,0)')
+  	.attr('class', 'y axis')
+  	.call(yAxis);
+
+    // Draw line on right-side of axis
+    var yAxisRight = d3.svg.axis().outerTickSize(0).scale(y).orient("right").ticks(0);
+    main.append("g").attr("class", "y axis").attr("transform", "translate(" + width + ", 0)").call(yAxisRight);
+
+
+    var g = main.append("svg:g");
+
+
+    var maodarea = [{
+      'x': 0,
+      'y': O2req
+    }];
+
+
+    g.selectAll(".bar2")
+    .data(maodarea)
+    .enter().append("rect")
+        .attr("class", "bar2")
+        .attr("x", function(d) { return x(d.x); })
+        .attr("y", function(d) { return y(d.y); })
+        .attr("width", width)
+        .attr("height", function(d) { return height - y(d.y); });
+
+    g.selectAll(".bar")
+    .data(dataset)
+    .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.x - intervalLength); })
+        .attr("y", function(d) { return y(d.y); })
+        .attr("width", width/numIntervals)
+        .attr("height", function(d) { return height - y(d.y); });
+
+
+
+    var lineData = [{
+        'x': 0,
+        'y': O2req
+    }, {
+        'x': 180,
+        'y': O2req
+    }];
+
+
+    var lineFunc = d3.svg.line()
+    .x(function(d) {
+        return x(d.x);
+    })
+    .y(function(d) {
+        return y(d.y);
+    })
+    .interpolate('linear');
+    g.append('svg:path')
+        .attr('d', lineFunc(lineData))
+        .attr('stroke', 'red')
+        .attr('stroke-width', 2)
+        .attr('fill', 'none');
+
+    g.append("text")
+        .attr("transform", "translate(5,"+y(lineData[1].y + 0.2)+")")
+        .attr("dy", ".35em")
+        .attr("text-anchor", "start")
+        .style("fill", "red")
+        .text("Oxygen Required " + (vo2max*workrate/100) + " (L/min)");
+
+    calcMAOD();
+
+    // Results and label to display on graph
+    $("#results2").text("MOAD: " + maod);
+    $("#xAxisLabel2").text("Time Interval (s)");
+    $("#yAxisLabel2").text("V02 Max (L/Min)");
 
 }
+
 
 /*
 * Calculates the R Squared value of the line
@@ -434,78 +524,169 @@ function correlation() {
   result = Math.pow((r1 / r2), 2);
   result = Math.round(result * 1000) / 1000;
   if (result < 0.8) {
-    alert("Please review the data you entered, it seems a bit off.");
+    alert("Please review the data you entered, it has a weak correlation.");
   }
   return result;
 }
 
+
+function calcMAOD() {
+
+    // Sum of deficit values
+    var sumO2deficits = 0;
+    // Number of intervals in a minute
+    var intervalsPMinute = 0;
+    intervalsPMinute = 60 / intervalLength;
+
+    // Calculating sum of deficits
+    for (var i = 0; i < y.length; i++){
+        sumO2deficits += (O2req - y[i]);
+    }
+
+    // Calculate deficit in one minute
+    maod = (sumO2deficits / intervalsPMinute);
+    // Convert MAOD from LO2 to mLO2
+    maod = maod * 1000;
+    // Convert MAOD from mLO2 to mLO2/kg
+    maod = Math.round(maod / bodyMass * 10) / 10;
+
+    thirdGraph();
+
+}
+
 /*
-* Clears the graph (jQuery)
-* NOTE: jQuery must be loaded before this script for this to work
+* Adjusts length of interval table for input based on time intervals set by user
 */
-function clearGraph(string) {
-  console.log("#" + string + "");
-  $("#" + string + "").empty();
-  // clear all variables
-  xInput = 0;
-  yInput = 0;
-  x = [];
-  y = [];
-  ny = 0;
-  nx = 0;
-  count = 0;
-  sumX = 0.0;
-  sumY = 0.0;
-  sumY2 = 0;
-  sumX2 = 0;
-  sumXY = 0;
-  //slope = 0.0;
-  //intercept = 0;
-  xFinal = [];
-  yFinal = [];
-  lineY1 = 0;
-  lineY2 = 0;
-  lineX1 = 0;
-  lineX = 0;
-  dataset = [];
-  $("#dataswap").text("");
-  $("#datawrap").text("");
-  $("#dataswap2").text("");
-  $("#datawrap2").text("");
-}
+function adjIntervalTable(input) {
 
-
-function kk(input) {
-  var intervalList = document.getElementsByClassName('x2');
-  var yList = document.getElementsByClassName('y2');
-  barwidth = parseInt(input);
-  interval = 180 / barwidth;
-  for (var index = 0; index <= interval; index++) {
-    intervalList[index].style.display = 'inline';
-    yList[index].style.display = 'inline';
-    intervalList[index].value = (index + 1) * input;
-  }
-  for (var i = interval; i <= intervalList.length; i++) {
-    intervalList[i].style.display = 'none';
-    yList[i].style.display = 'none';
+  if ((input <= totalTime) && (input % 10 == 0) || (input % 15 == 0)) {
+    var intervalList = document.getElementsByClassName('x2');
+    var yList = document.getElementsByClassName('y2');
+    intervalLength = parseInt(input);
+    numIntervals = totalTime / intervalLength;
+    for (var index = 0; index <= numIntervals; index++) {
+        yList[index].value = "";
+        intervalList[index].style.display = 'inline';
+        yList[index].style.display = 'inline';
+        intervalList[index].value = (index + 1) * input;
+      }
+      for (var i = numIntervals; i <= intervalList.length; i++) {
+        yList[index].value = "";
+        intervalList[i].style.display = 'none';
+        yList[i].style.display = 'none';
+      }
   }
 }
 
-function setName(name) {
-  var d = document.getElementById('officialname');
-  d.innerHTML = "Patient Name: " + name + "<input name='submitMedical' value='' title='edit client details' class='profile_edit_btn' type='submit' />";
-}
-
+/*
+* Sets mass of patient
+*/
 function setMass(mass) {
   bodyMass = parseFloat(mass);
 }
 
+/*
+* Calculates required speed based on supermax VO2 based on linear equation calculated in screen 1
+*/
 function reqSpeed(){
     vo2max = parseFloat(document.getElementById('Vmax').value);
     workrate = parseFloat(document.getElementById('supermaximal').value);
-    reqwork = ((vo2max*workrate/100 - intercept) / slope);
+    O2req = vo2max*workrate/100;
+
+    reqwork = ((O2req - intercept) / slope);
 
     var d = document.getElementById('reqworkload');
     d.value = reqwork;
+}
 
+function thirdGraph() {
+  var margin = {top: 20, right: 20, bottom: 20, left: 50}
+        , width = 185 - margin.left - margin.right
+        , height = 300 - margin.top - margin.bottom;
+
+    var x = d3.scale.linear()
+    .domain([0, 1])
+    .range([ 0, width ]);
+
+    var y = d3.scale.linear()
+    .domain([0, 100])
+    .range([ height, 0 ]);
+
+    var chart = d3.select('#graphS3')
+  	.append('svg:svg')
+  	.attr('width', width + margin.right + margin.left)
+  	.attr('height', height + margin.top + margin.bottom)
+  	.attr('class', 'chart')
+
+    var main = chart.append('g')
+  	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+  	.attr('width', width)
+  	.attr('height', height)
+  	.attr('class', 'main')
+
+    // Draw the X-axis
+    var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient('bottom')
+    .ticks(0)
+    .tickValues(0)
+    .innerTickSize(0)
+    .outerTickSize(0)
+    .tickPadding(10);
+
+    main.append('g')
+  	.attr('transform', 'translate(0,' + height + ')')
+  	.attr('class', 'main axis date')
+  	.call(xAxis);
+
+    // Draw the Y-axis
+    var yAxis = d3.svg.axis()
+  	.scale(y)
+  	.orient('left')
+    .innerTickSize(-width)
+    .outerTickSize(0)
+    .tickPadding(10);
+
+    main.append('g')
+  	.attr('transform', 'translate(0,0)')
+  	.attr('class', 'main axis date')
+  	.call(yAxis);
+
+    // Draw line on right-side of axis
+    var yAxisRight = d3.svg.axis().outerTickSize(0).scale(y).orient("right").ticks(0);
+    main.append("g").attr("class", "y axis").attr("transform", "translate(" + width + ", 0)").call(yAxisRight);
+
+
+    var g = main.append("svg:g");
+
+
+    var lineData = [{
+        'x': 0,
+        'y': maod
+    }, {
+        'x': 1,
+        'y': maod
+    }];
+
+
+    var lineFunc = d3.svg.line()
+    .x(function(d) {
+        return x(d.x);
+    })
+    .y(function(d) {
+        return y(d.y);
+    })
+    .interpolate('linear');
+    g.append('svg:path')
+        .attr('d', lineFunc(lineData))
+        .attr('stroke', 'red')
+        .attr('stroke-width', 2)
+        .attr('fill', 'none');
+
+    g.append("text")
+        .attr("transform", "translate(5,"+y(lineData[0].y + 2.7)+")")
+        .attr("dy", ".35em")
+        .attr("text-anchor", "start")
+        .style("fill", "red")
+        .text(maod + "%");
 }
