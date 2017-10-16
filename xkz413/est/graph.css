@@ -69,6 +69,7 @@ input.x, input.y {
 input.x2, input.y2 {
     width: 90px;
     height: 40px;
+    margin-top: 10px;
 }
 
 #name, #bodymass {
