@@ -24,33 +24,30 @@ sub {
 }
 
 .axis path, .axis line {
-    stroke: black;
+    stroke: darkgray;
+    stroke-width: 2px;
     outline-width: thick;
     shape-rendering: crispEdges;
 }
 
-.axis text {
+.text {
     font-family: 'Arial';
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .tick {
     stroke-dasharray: 1, 2;
+    stroke: darkgray;
 }
 
 .bar {
-    outline-style: solid;
-    outline-width: thin;
-    outline-color: black;
-    fill: steelblue;
+    fill: #f2f2f2;
+    opacity: 0.7;
 }
 
 .bar2 {
     /* margin left: 10px */
-    fill: #EAFFEF;
-    outline-color: black;
-    outline-style: solid;
-    outline-width: thin;
+    fill: #c5efdb;
     opacity: 0.9;
 }
 

@@ -68,26 +68,26 @@ $(document).ready(function () {
 * Sets sex and bodymass entered on first screen
 */
 function changeScreens() {
-    
+
     var screen1 = document.getElementById("screen1");
     var screen2 = document.getElementById("screen2");
     var button = document.getElementById("move");
     if (screen1.style.display == 'inline') {
         sex = $('input[name="sex"]:checked').val();
-        setMass(document.getElementById('bodymass').value);     
+        setMass(document.getElementById('bodymass').value);
         var title = document.getElementById("title");
         title.innerHTML = "Anaerobic capacity / MAOD (screen 2)";
         screen1.style.display = 'none';
         screen2.style.display = 'inline';
         button.value = "Previous Screen";
-        workloadUnits = $('input[name="workloadUnits"]:checked').val();    
+        workloadUnits = $('input[name="workloadUnits"]:checked').val();
         if (workloadUnits == "speed") {
             var units = document.getElementById("reqWUnits");
             units.innerHTML = "<strong>Required Speed (kph)</strong>";
         } else {
             var units = document.getElementById("reqWUnits");
             units.innerHTML = "<strong>Required Power (W)</strong>";
-        } 
+        }
     } else {
         var title = document.getElementById("title");
         title.innerHTML = "Anaerobic capacity / MAOD (screen 1)";
@@ -95,7 +95,6 @@ function changeScreens() {
         screen2.style.display = 'none';
         button.value = "Next Screen";
     }
-    
 
 }
 
@@ -178,7 +177,7 @@ function getMinimumValue(list) {
 function clearGraph(string, button) {
     $("#" + string + "").empty();
 
-    // Clears all variables
+    // Clears all variables on Screen 1
     if (string == 'graphS1') {
         xInput = 0;
         yInput = 0;
@@ -192,9 +191,11 @@ function clearGraph(string, button) {
         sumY2 = 0;
         sumX2 = 0;
         sumXY = 0;
-        $("#xAxisLabel").text("");
+        $("#xAxisLabel").text("Workload (Kph)");
+        $("#xAxisLabel").css("opacity", "0.0");
         $("#yAxisLabel").text("");
-        $("#results").text("");
+        $("#results").html("<strong><div style=\"margin-left: -73px;\">Y = </div></strong><div style=\"margin-left: -120px;\"><strong>R&sup2;= </strong></div>");
+        $("#results").css("opacity", "0.0");
         xFinal = [];
         yFinal = [];
         lineY1 = 0;
@@ -208,29 +209,53 @@ function clearGraph(string, button) {
             var yList = document.getElementsByClassName("y");
             var bodymass = document.getElementById("bodymass");
             bodymass.value = "";
+            var name = document.getElementById("name");
+            name.value = "";
+
+            var female = document.getElementById("female");
+            female.checked = false;
+            var male = document.getElementById("male");
+            male.checked = false;
+
+            var speed = document.getElementById("speed");
+            speed.checked = false;
+            var power = document.getElementById("power");
+            power.checked = false;
+
             for (var i = 0; i < xList.length; i++) {
                 xList[i].value = "";
                 yList[i].value = "";
             }
         }
 
+        // Clears all values on Screen 2
     } else if (string == 'graphS2') {
         vo2MaxValues = [];
         xs2 = [];
         ys2 = [];
-        $("#xAxisLabel2").text("");
+        $("#xAxisLabel2").text("Graph");
+        $("#xAxisLabel2").css("opacity", "0.0");
         $("#yAxisLabel2").text("");
-        $("#results2").text("");
+        $("#results2").text("Result");
+        $("#results2").css("opacity", "0.0");
         // also clear percentile graph
         $("#graphS3").empty();
+        $("#percent").css("opacity", "0.0");
+        $("#percent").text("99.9%");
+
+        $("#yAxisLabel3").text("");
 
         if (button) {
             var yList = document.getElementsByClassName("y2");
-            var bodymass = document.getElementById("bodymass");
-            bodymass.value = "";
             for (var i = 0; i < yList.length; i++) {
                 yList[i].value = "";
             }
+            var Vmax = document.getElementById("Vmax");
+            Vmax.value = "";
+            var supramaximal = document.getElementById("supramaximal");
+            supramaximal.value = "";
+            var reqworkload = document.getElementById("reqworkload");
+            reqworkload.value = "";
         }
     }
 
@@ -269,7 +294,7 @@ function regression(x) {
 * Button call from HTML, starts getting data from form
 */
 function s1Input() {
-    
+
     if (document.getElementById('bodymass').value == "") {
         alert("Please enter a body mass (kg)");
         throw new Error("Please enter a body mass");
@@ -278,7 +303,7 @@ function s1Input() {
         throw new Error("Please select patient sex");
     } else if ((!$('input[name="workloadUnits"]:checked').val())) {
         alert("Please select workload units");
-        throw new Error("Please select workload units");      
+        throw new Error("Please select workload units");
     }
 
     clearGraph('graphS1', false);
@@ -326,6 +351,7 @@ function s1Input() {
 * like x-intercept, y-intercept, slope etc
 */
 function firstGraph() {
+    $("#xAxisLabel").css("opacity", "1.0");
     var margin = { top: 20, right: 20, bottom: 20, left: 50 }
         , width = 700 - margin.left - margin.right
         , height = 700 - margin.top - margin.bottom;
@@ -333,15 +359,15 @@ function firstGraph() {
     /* Determines start & end X&Y coordinates to plot line within bounds of axis */
     var xP1;
     var yP1;
-    if (intercept >= 0){
+    if (intercept >= 0) {
         xP1 = 0;
         yP1 = lineY1;
     } else {
-        xP1 = (-intercept/slope);
+        xP1 = (-intercept / slope);
         yP1 = 0;
     };
-    
-    
+
+
     /* Start and end X & Y coordinates for regression line plotted on graph*/
     var lineData = [{
         'x': xP1,
@@ -350,7 +376,7 @@ function firstGraph() {
         'x': lineX2,
         'y': lineY2
     }];
-    
+
     var data = workloadData;
 
     var x = d3.scale.linear()
@@ -408,19 +434,8 @@ function firstGraph() {
     main.append("g").attr("class", "y axis").attr("transform", "translate(" + width + ", 0)").call(yAxisRight);
 
     var g = main.append("svg:g");
-    
-        g.selectAll("scatter-dots")
-        .data(data)
-        .enter().append("svg:circle")
-        .attr("cx", function (d, i) { return x(d[0]); })
-        .attr("cy", function (d) { return y(d[1]); })
-        .attr("r", 5, 5)
-        .append("svg:title") // tooltip with x , y coord
-        .text(function (d) {
-            return d;
-        });
-    
-        var lineFunc = d3.svg.line()
+
+    var lineFunc = d3.svg.line()
         .x(function (d) {
             return x(d.x);
         })
@@ -428,8 +443,8 @@ function firstGraph() {
             return y(d.y);
         })
         .interpolate('linear');
-    
-    
+
+
     g.append('svg:path')
         .attr('d', lineFunc(lineData))
         .attr('stroke', '#cec3e3')
@@ -440,24 +455,36 @@ function firstGraph() {
             return "Y-Intercept: " + intercept + ", Slope: " + slope;
         });
 
+    g.selectAll("scatter-dots")
+        .data(data)
+        .enter().append("svg:circle")
+        .attr("cx", function (d, i) { return x(d[0]); })
+        .attr("cy", function (d) { return y(d[1]); })
+        .attr("r", 5, 5)
+        .append("svg:title") // tooltip with x , y coord
+        .text(function (d) {
+            return d;
+        });
+
 
     // Results and labels to display on graph
-    $("#results").html("<pre><strong><div style=\"margin-left: -5px;\">Y = " + Math.round(slope * 1000) / 1000 + "X + " + Math.round(intercept * 1000) / 1000 + "</div></strong></pre><pre><div style=\"margin-left: -120px;\"><strong>R&sup2;= " + correlation() + "</strong></div></pre>");
+    $("#results").css("opacity", "1.0");
+    $("#results").html("<strong><div style=\"margin-left: -73px;\">Y = " + Math.round(slope * 1000) / 1000 + "X + " + Math.round(intercept * 1000) / 1000 + "</div></strong><div style=\"margin-left: -120px;\"><strong>R&sup2;= " + correlation() + "</strong></div>");
     if ($('input[name="workloadUnits"]:checked').val() == "speed") {
         $("#xAxisLabel").text("Workload (Kph)");
     } else {
         $("#xAxisLabel").text("Workload (W)");
     }
-    
-    $("#yAxisLabel").html("V0<sub>2</sub> (L/Min)");
-    
+
+    $("#yAxisLabel").html("V0<sub>2</sub> (L/min)");
+
 }
 
 /*
 * Button call from HTML, starts getting data from form
 */
 function s2Input() {
-    
+
     reqSpeed();
     clearGraph('graphS2', false);
     getList('x2');
@@ -468,6 +495,7 @@ function s2Input() {
     }
 
     secondGraph();
+    $("#xAxisLabel2").css("opacity", "1");
 }
 
 /*
@@ -483,7 +511,7 @@ function secondGraph() {
         .range([0, width]);
 
     var y = d3.scale.linear()
-        .domain([0, 6])
+        .domain([0, 7])
         .range([height, 0]);;
 
     var chart = d3.select('#graphS2')
@@ -503,7 +531,7 @@ function secondGraph() {
         .scale(x)
         .orient('bottom')
         .ticks(5)
-        .tickValues(d3.range(0, width, 15))
+        .tickValues(d3.range(0, width, intervalLength))
         .innerTickSize(-height)
         .outerTickSize(0)
         .tickPadding(10);
@@ -517,6 +545,7 @@ function secondGraph() {
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient('left')
+        .ticks(14)
         .innerTickSize(-width)
         .outerTickSize(0)
         .tickPadding(10);
@@ -525,10 +554,6 @@ function secondGraph() {
         .attr('transform', 'translate(0,0)')
         .attr('class', 'y axis')
         .call(yAxis);
-
-    // Draw line on right-side of axis
-    var yAxisRight = d3.svg.axis().outerTickSize(0).scale(y).orient("right").ticks(0);
-    main.append("g").attr("class", "y axis").attr("transform", "translate(" + width + ", 0)").call(yAxisRight);
 
     var g = main.append("svg:g");
 
@@ -541,9 +566,9 @@ function secondGraph() {
         .data(maodarea)
         .enter().append("rect")
         .attr("class", "bar2")
-        .attr("x", 0)
-        .attr("y", function (d) { return y(d.y); })
-        .attr("width", function (d) { return x(d.x); })
+        .attr("x", 1)
+        .attr("y", function (d) { return y(d.y) - 1; })
+        .attr("width", function (d) { return x(d.x) - 1; })
         .attr("height", function (d) { return height - y(d.y); });
 
     g.selectAll(".bar")
@@ -551,7 +576,7 @@ function secondGraph() {
         .enter().append("rect")
         .attr("class", "bar")
         .attr("x", function (d) { return x(d.x - intervalLength); })
-        .attr("y", function (d) { return y(d.y); })
+        .attr("y", function (d) { return y(d.y) - 1; })
         .attr("width", width / numIntervals)
         .attr("height", function (d) { return height - y(d.y); });
 
@@ -573,23 +598,25 @@ function secondGraph() {
         .interpolate('linear');
     g.append('svg:path')
         .attr('d', lineFunc(lineData))
-        .attr('stroke', 'red')
-        .attr('stroke-width', 2)
+        .attr('stroke', 'black')
+        .attr('stroke-width', 1)
         .attr('fill', 'none');
 
     g.append("text")
         .attr("transform", "translate(5," + y(lineData[1].y + 0.2) + ")")
         .attr("dy", ".35em")
         .attr("text-anchor", "start")
-        .style("fill", "red")
-        .text("Oxygen Required " + (vo2max * workrate / 100) + " (L/min)");
+        .style("fill", "black")
+        .style("font-weight", "bold")
+        .text("Oxygen Required " + Math.round(O2req * 10) / 10 + " (L/min)");
 
     calcMAOD();
 
     // Results and label to display on graph
-    $("#results2").text("MOAD: " + maod + " mL/kg O2");
+    $("#results2").html("MOAD = <strong>" + maod + "</strong> mL O<sub>2</sub> eq/kg");
+    $("#results2").css("opacity", "1.0");
     $("#xAxisLabel2").text("Time Interval (s)");
-    $("#yAxisLabel2").text("V02 Max (L/Min)");
+    $("#yAxisLabel2").text("V02 (L/min)");
 }
 
 
@@ -630,7 +657,6 @@ function calcMAOD() {
     maod = Math.round(maod / bodyMass * 10) / 10;
 
     percentileGraph();
-
 }
 
 /*
@@ -672,20 +698,21 @@ function setMass(mass) {
 function reqSpeed() {
     vo2max = parseFloat(document.getElementById('Vmax').value);
     workrate = parseFloat(document.getElementById('supramaximal').value);
-    O2req = vo2max * workrate / 100;
 
+    O2req = vo2max * workrate / 100;
     reqwork = ((O2req - intercept) / slope);
 
+
     var d = document.getElementById('reqworkload');
-    d.value = reqwork;
+    d.value = (Math.round(reqwork * 10) / 10);
 }
 
 function percentileGraph() {
     var rank = calcPercentile(sex);
     
-    var margin = { top: 20, right: 20, bottom: 20, left: 50 }
-        , width = 100 - margin.left - margin.right
-        , height = 300 - margin.top - margin.bottom;
+    var margin = { top: 20, right: 20, bottom: 20, left: 70 }
+        , width = 150 - margin.left - margin.right
+        , height = 700 - margin.top - margin.bottom;
 
     var x = d3.scale.linear()
         .domain([0, 1])
@@ -706,6 +733,7 @@ function percentileGraph() {
         .attr('width', width)
         .attr('height', height)
         .attr('class', 'main')
+    
 
     // Draw the X-axis
     var xAxis = d3.svg.axis()
@@ -726,10 +754,10 @@ function percentileGraph() {
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient('left')
-        .innerTickSize(-width)
-        .outerTickSize(0)
-        .tickPadding(10);
-
+        .ticks(0)
+        .innerTickSize(0)
+        .outerTickSize(0);
+    
     main.append('g')
         .attr('transform', 'translate(0,0)')
         .attr('class', 'main axis date')
@@ -739,36 +767,13 @@ function percentileGraph() {
     var yAxisRight = d3.svg.axis().outerTickSize(0).scale(y).orient("right").ticks(0);
     main.append("g").attr("class", "y axis").attr("transform", "translate(" + width + ", 0)").call(yAxisRight);
 
+    // Draw line on top of axis
+    var xAxisTop = d3.svg.axis().outerTickSize(0).scale(x).orient("top").ticks(0);
+    main.append("g").attr("class", "x axis").attr("transform", "translate(0, " + height).call(xAxisTop);
+
+    
     var g = main.append("svg:g");
 
-    var lineData = [{
-        'x': 0,
-        'y': rank
-    }, {
-        'x': 1,
-        'y': rank
-    }];
-
-    var lineFunc = d3.svg.line()
-        .x(function (d) {
-            return x(d.x);
-        })
-        .y(function (d) {
-            return y(d.y);
-        })
-        .interpolate('linear');
-    g.append('svg:path')
-        .attr('d', lineFunc(lineData))
-        .attr('stroke', 'red')
-        .attr('stroke-width', 2)
-        .attr('fill', 'none');
-
-    g.append("text")
-        .attr("transform", "translate(5," + y(lineData[0].y + 2.7) + ")")
-        .attr("dy", ".35em")
-        .attr("text-anchor", "start")
-        .style("fill", "red")
-        .text("Ranking " + Math.round(rank * 100) / 100 + "%'ile");
 
     var maodarea = [{
         'x': 0,
@@ -778,15 +783,20 @@ function percentileGraph() {
         'y': rank
     }];
 
-    // fill up to line
-    g.selectAll(".bar")
+    // Fill graph up to percentile rank
+    g.selectAll(".bar2")
         .data(maodarea)
         .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", 0)
+        .attr("class", "bar2")
+        .attr("x", 1)
         .attr("y", function (d) { return y(d.y); })
-        .attr("width", function (d) { return x(d.x); })
+        .attr("width", function (d) { return x(d.x) - 2; })
         .attr("height", function (d) { return height - y(d.y); });
+
+    //Label axis
+    $("#yAxisLabel3").text("Ranking %'ile");
+    $("#percent").html("<strong>"+ (Math.round(rank * 10) / 10) + "%</strong>");
+    $("#percent").css("opacity", "1.0");
 
 }
 
@@ -801,34 +811,34 @@ function calcPercentile(sex) {
         mean = maodMmean;
         sd = maodMsd;
     }
-    
+
     // z == number of standard deviations from the mean
-    var z = ((maod - mean)/sd);
+    var z = ((maod - mean) / sd);
 
     // If z is greater than 6.5 standard deviations from the mean
     // the number of significant digits will be outside of a reasonable 
     // range
     if (z < -6.5) {
         alert("MAOD outside of expected bounds. Verify input values.");
-        return 0.0;  
+        return 0.0;
     } else if (z > 6.5) {
         alert("MAOD outside of expected bounds. Verify input values.");
         return 0.0;
-    }      
+    }
 
     var factK = 1;
     var sum = 0;
     var term = 1;
     var k = 0;
     var loopStop = Math.exp(-23);
-    
+
     while (Math.abs(term) > loopStop) {
-        term = .3989422804 * Math.pow(-1,k) * Math.pow(z,k) / (2 * k + 1) / Math.pow(2,k) * Math.pow(z,k+1) / factK;
+        term = .3989422804 * Math.pow(-1, k) * Math.pow(z, k) / (2 * k + 1) / Math.pow(2, k) * Math.pow(z, k + 1) / factK;
         sum += term;
         k++;
         factK *= k;
     }
-    
+
     sum += 0.5;
     sum = sum * 100;
     return sum;
