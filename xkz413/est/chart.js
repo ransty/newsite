@@ -40,6 +40,9 @@ var maodMsd = 11;
 var maodFmean = 54;
 var maodFsd = 9;
 
+/*
+* Ajax to allow tab and enter to navigate across table and buttons
+*/
 $(document).ready(function () {
     $('.x').keydown(function (e) {
         if (e.which === 13) {
@@ -73,14 +76,24 @@ function changeScreens() {
     var screen2 = document.getElementById("screen2");
     var button = document.getElementById("move");
     if (screen1.style.display == 'inline') {
+        
+        if (document.getElementById('bodymass').value == "") {
+            alert("Please enter a body mass (kg)");
+            throw new Error("Please enter a body mass");
+        } else if ((!$('input[name="sex"]:checked').val())) {
+            alert("Please select patient sex");
+            throw new Error("Please select patient sex");
+        }
         sex = $('input[name="sex"]:checked').val();
         setMass(document.getElementById('bodymass').value);
+        
         var title = document.getElementById("title");
         title.innerHTML = "Anaerobic capacity / MAOD (screen 2)";
         screen1.style.display = 'none';
         screen2.style.display = 'inline';
         button.value = "Previous Screen";
         workloadUnits = $('input[name="workloadUnits"]:checked').val();
+        
         if (workloadUnits == "speed") {
             var units = document.getElementById("reqWUnits");
             units.innerHTML = "<strong>Required Speed (kph)</strong>";
@@ -88,6 +101,7 @@ function changeScreens() {
             var units = document.getElementById("reqWUnits");
             units.innerHTML = "<strong>Required Power (W)</strong>";
         }
+        
     } else {
         var title = document.getElementById("title");
         title.innerHTML = "Anaerobic capacity / MAOD (screen 1)";
@@ -109,6 +123,7 @@ function getList(htmlClass) {
             check++;
         }
     }
+    
     if (check == input.length) {
         throw new Error("No input values for X, nothing to be drawn.");
     } else if (htmlClass == 'x') {
@@ -132,12 +147,13 @@ function freeButton() {
 }
 
 /*
-* Removes invalid input, i.e blank spots
+* Removes invalid input, i.e undefined or nulls
 */
 function copy(input) {
     var temp = [];
     for (var index = 0; index < input.length; index++) {
-        if (!input[index].value) {
+        
+        if (!input[index].value || input[index].value == "") {
             continue;
         }
         temp[index] = parseFloat(input[index].value);
@@ -256,6 +272,9 @@ function clearGraph(string, button) {
             supramaximal.value = "";
             var reqworkload = document.getElementById("reqworkload");
             reqworkload.value = "";
+            
+            vMax = 0;
+            workrate = 0;
         }
     }
 
@@ -337,18 +356,20 @@ function s1Input() {
     for (var i = 0; i < xs1.length; i++) {
         workloadData.push([xs1[i], ys1[i]]);
     }
-    if (xs1.length != ys1.length) {
-        alert("X list does not match the Y list");
+         
+    if (xs1.length != ys1.length || !ys1[0]) {
+        alert("X-list does not match the Y-list");
+        throw new error("X-List does not match Y-list");
     } else {
         count = xs1.length;
+        firstGraph();
+        freeButton();
     }
-    firstGraph();
-    freeButton();
 }
 
 /*
-* Draw a chart (line regression) and display information
-* like x-intercept, y-intercept, slope etc
+* Plots graph for Screen 1 include scatter dots for data pairs and line regression
+* Displays linear regression equation and R2 value
 */
 function firstGraph() {
     $("#xAxisLabel").css("opacity", "1.0");
@@ -380,7 +401,7 @@ function firstGraph() {
     var data = workloadData;
 
     var x = d3.scale.linear()
-        .domain([0, lineX2 + 5])
+        .domain([0, lineX2])
         .range([0, width]);
 
     var y = d3.scale.linear()
@@ -429,9 +450,6 @@ function firstGraph() {
         .attr('class', 'main axis date')
         .call(yAxis);
 
-    // Draw line on right-side of graph
-    var yAxisRight = d3.svg.axis().outerTickSize(0).scale(y).orient("right").ticks(0);
-    main.append("g").attr("class", "y axis").attr("transform", "translate(" + width + ", 0)").call(yAxisRight);
 
     var g = main.append("svg:g");
 
@@ -469,7 +487,10 @@ function firstGraph() {
 
     // Results and labels to display on graph
     $("#results").css("opacity", "1.0");
-    $("#results").html("<strong><div style=\"margin-left: -73px;\">Y = " + Math.round(slope * 1000) / 1000 + "X + " + Math.round(intercept * 1000) / 1000 + "</div></strong><div style=\"margin-left: -120px;\"><strong>R&sup2;= " + correlation() + "</strong></div>");
+    
+//    $("#results").html("<strong><div style=\"margin-left: -73px;\">Y = " + Math.round(slope * 1000) / 1000 + "X + " + Math.round(intercept * 1000) / 1000 + "</div></strong><div style=\"margin-left: -120px;\"><strong>R&sup2;= " + correlation() + "</strong></div>");
+    
+    $("#results").html("<div style='margin-left: -73px; padding-left: 375px; text-align: left';><strong>Y = " + Math.round(slope * 1000) / 1000 + "X + " + Math.round(intercept * 1000) / 1000 + " <br />R&sup2;= " + correlation() + "</strong></div>");
     if ($('input[name="workloadUnits"]:checked').val() == "speed") {
         $("#xAxisLabel").text("Workload (Kph)");
     } else {
@@ -484,7 +505,15 @@ function firstGraph() {
 * Button call from HTML, starts getting data from form
 */
 function s2Input() {
-
+    
+    if (document.getElementById('Vmax').value == "") {
+        alert("Please enter Estimated VO2max (L/min)");
+        throw new Error("Please enter a Estimated VO2max (L/min)");
+    } else if (document.getElementById('supramaximal').value == "") {
+        alert("Please enter Supramaximal Workrate (%max)");
+        throw new Error("Please enter Supramaximal Workrate (%max)");
+    }
+    
     reqSpeed();
     clearGraph('graphS2', false);
     getList('x2');
@@ -499,7 +528,7 @@ function s2Input() {
 }
 
 /*
-* Draws graph for second screen
+* Draws graph for second screen using D3
 */
 function secondGraph() {
     var margin = { top: 20, right: 20, bottom: 20, left: 50 }
@@ -608,7 +637,7 @@ function secondGraph() {
         .attr("text-anchor", "start")
         .style("fill", "black")
         .style("font-weight", "bold")
-        .text("Oxygen Required " + Math.round(O2req * 10) / 10 + " (L/min)");
+        .text("Oxygen Required " + Math.round(O2req * 100) / 100 + " L/min");
 
     calcMAOD();
 
@@ -616,7 +645,7 @@ function secondGraph() {
     $("#results2").html("MOAD = <strong>" + maod + "</strong> mL O<sub>2</sub> eq/kg");
     $("#results2").css("opacity", "1.0");
     $("#xAxisLabel2").text("Time Interval (s)");
-    $("#yAxisLabel2").text("V02 (L/min)");
+    $("#yAxisLabel2").html("V0<sub>2</sub> (L/min)");
 }
 
 
@@ -636,8 +665,11 @@ function correlation() {
     return result;
 }
 
-
+/*
+* Calculates the MAOD based on input from Screen 2
+*/
 function calcMAOD() {
+    
     // Sum of deficit values
     var sumO2deficits = 0;
     // Number of intervals in a minute
@@ -656,6 +688,14 @@ function calcMAOD() {
     // Convert MAOD from mLO2 to mLO2/kg
     maod = Math.round(maod / bodyMass * 10) / 10;
 
+    if (!maod) {
+        alert("Unable to calculate MAOD - check your data input");
+        throw new Error("Unable to calculate MAOD");
+    } else if (maod < 0 || maod > 100){
+        alert("MAOD outside of expected bounds - check your data input");
+        throw new Error("Unable to calculate MAOD");   
+    }
+    
     percentileGraph();
 }
 
@@ -663,7 +703,7 @@ function calcMAOD() {
 * Adjusts length of interval table for input based on time intervals set by user
 */
 function adjIntervalTable(input) {
-    if (((input.value <= totalTime) && (180 % input.value == 0)) && ((input.value % 10 == 0) || (input.value % 15 == 0))) {
+    if (((input.value <= totalTime) && (180 % input.value == 0)) && ((input.value % 10 == 0) || (input.value % 15 == 0)) || input.value == 5) {
         input.style.background = "white";
         var intervalList = document.getElementsByClassName('x2');
         var yList = document.getElementsByClassName('y2');
@@ -693,20 +733,27 @@ function setMass(mass) {
 }
 
 /*
-* Calculates required speed based on supermax VO2 based on linear equation calculated in screen 1
+* Calculates required workload based on supermax. workrate and Est. VO2max, based on linear equation calculated in screen 1
 */
 function reqSpeed() {
     vo2max = parseFloat(document.getElementById('Vmax').value);
     workrate = parseFloat(document.getElementById('supramaximal').value);
+    
+    if (!!vo2max && !!workrate){
+        O2req = vo2max * workrate / 100;
+        reqwork = ((O2req - intercept) / slope);
 
-    O2req = vo2max * workrate / 100;
-    reqwork = ((O2req - intercept) / slope);
-
-
-    var d = document.getElementById('reqworkload');
-    d.value = (Math.round(reqwork * 10) / 10);
+        var d = document.getElementById('reqworkload');
+        d.value = (Math.round(reqwork * 10) / 10);   
+    } else {
+        var d = document.getElementById('reqworkload');
+        d.value = ""; 
+    }
 }
 
+/*
+* Graphs the percentile ranking on Screen 2 using D3
+*/
 function percentileGraph() {
     var rank = calcPercentile(sex);
     
@@ -769,7 +816,10 @@ function percentileGraph() {
 
     // Draw line on top of axis
     var xAxisTop = d3.svg.axis().outerTickSize(0).scale(x).orient("top").ticks(0);
-    main.append("g").attr("class", "x axis").attr("transform", "translate(0, " + height).call(xAxisTop);
+    main.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0,0)")
+        .call(xAxisTop);
 
     
     var g = main.append("svg:g");
@@ -800,7 +850,12 @@ function percentileGraph() {
 
 }
 
+/*
+* Calculates the percentile ranking based on hardcoded mean and standard deviation for male and female
+*/
 function calcPercentile(sex) {
+
+    
     var mean;
     var sd;
 
@@ -815,14 +870,14 @@ function calcPercentile(sex) {
     // z == number of standard deviations from the mean
     var z = ((maod - mean) / sd);
 
-    // If z is greater than 6.5 standard deviations from the mean
+    // If z is greater than 5.5 or less than -4 standard deviations from the mean
     // the number of significant digits will be outside of a reasonable 
     // range
-    if (z < -6.5) {
-        alert("MAOD outside of expected bounds. Verify input values.");
+    if (z < -4) {
+        alert("Unable to plot percentile ranking - check input values");
         return 0.0;
-    } else if (z > 6.5) {
-        alert("MAOD outside of expected bounds. Verify input values.");
+    } else if (z > 5.5) {
+        alert("Unable to plot percentile ranking - check input values");
         return 0.0;
     }
 
@@ -841,6 +896,6 @@ function calcPercentile(sex) {
 
     sum += 0.5;
     sum = sum * 100;
+    
     return sum;
-
 }

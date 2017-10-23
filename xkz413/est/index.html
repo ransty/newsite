@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html ng-app>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -7,10 +7,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src='https://d3js.org/d3.v3.min.js'></script>
-    <script src="chart.js"></script>
+    <script src="chart.min.js"></script>
     <script src="frame.js"></script>
     <link rel="stylesheet" type="text/css" href="http://115.112.118.252/VirtualEST//assets/css/health.css" />
     <link rel="stylesheet" type="text/css" href="http://115.112.118.252/VirtualEST//assets/css/style.css" />
+    
+    <!-- Reference to MAOD module's .css -->
     <link rel="stylesheet" type="text/css" href="graph.css" />
 </head>
 
@@ -27,6 +29,8 @@
             <div class="orng_box_btn f_left">
                 <a href="#" id="exit"><img src="http://115.112.118.252/VirtualEST//assets/images/back_green.jpg"></a>
             </div>
+            
+            <!-- Page title for MAOD module -->
             <div class="orng_box_head f_left">
                 <h3>Fitness Testing</h3>
                 <p id="title">Anaerobic capacity / MAOD (screen 1)</p>
@@ -50,6 +54,7 @@
             <div class="vitual_div"></div>
             <div class="overlay">&nbsp;</div>
 
+            <!-- Information for MAOD module, same across both screens -->
             <div class="info_block">
                 <div class="info_block_head">Maximal Accumulated Oxygen Deficit (MAOD)</div>
                 <p>
@@ -123,10 +128,12 @@
                 </div>
             </div>
 
-            <!--Start right -->
+            <!--Start right, Screen 1 -->
             <div id="screen1" style="display: inline" class="right-section right-section_new">
                 <div class="right-head">Maximal Accumulated Oxygen Deficit (MAOD)</div>
                 <div id="input-vals">
+                    
+                    <!-- Inputs for Bodymass, Name, and Sex -->
                     <label for="bodymass"><strong>Body Mass (kg)</strong></label>
                     <label for="name" style="margin-left: 180px"><strong>Name</strong></label>
                     <label for="" style="margin-left: 225px;"><strong>Sex</strong></label>
@@ -143,7 +150,8 @@
                 </div>
 
                 <br>
-
+                
+                <!-- Input table for Workload and VO2max data pairs, plotted in firstGraph -->
                 <div class="field_row" style="border-bottom: none">
                     <ul class="field_24" id="workload" style="position: absolute; margin-top: 10px;">
                         <label style="margin-bottom: 0; padding-bottom: 21px; text-align: center"><strong>Workload</strong></label>
@@ -162,7 +170,7 @@
                         <li><input class="x" type="text" tabindex=24 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
                         <li></li>
                         <li><input type="radio" style="display: none" name="workloadUnits" id="power" value="power"><label for="power" style="margin-top: 10px;"><span style="float: none; margin-right: 8px;"></span><strong>Watts</strong></label></li>
-                        <li><input type="radio" style="display: none" name="workloadUnits" id="speed" value="speed"><label for="speed"><span style="float: none; margin-right: 8px;"></span><strong>Km/hr</strong></label></li>
+                        <li><input type="radio" style="display: none" name="workloadUnits" id="speed" value="speed"><label for="speed"><span style="float: none; margin-right: 8px;"></span><strong>kph</strong></label></li>
                     </ul>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <ul id="vo2" class="field_24" style="position: absolute; margin-left: 80px; margin-top: 10px;">
@@ -186,11 +194,14 @@
                         <li><input class="y" type="text" tabindex=25 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
                     </ul>
 
+                    <!-- SVG graph element using D3 to create and plot graph, and axis labels -->
                     <div id="results" style="text-align: center; margin-right: 130px; margin-top: -20px; opacity: 0.0"><strong><div style="margin-left: -73px;">Y = </div></strong><div style="margin-left: -120px;"><strong>R&sup2;= </strong></div></div>
                     <p id="yAxisLabel" class="axis text" style="position: absolute; margin-left: 210px; margin-top: 330px; transform: rotate(270deg);"></p>
                     <svg id="graphS1" width="700" height="700" style="margin-left: 250px; margin-top: -%5;"></svg>
                     <p id="xAxisLabel" class="axis text" style="text-align: center; margin-left: 345px; opacity: 0.0;">Workload (Kph)</p>
                     <br />  
+                    
+                    <!-- Navigation buttons for plotting graph, clearing data, and moving to next screen -->
                     <input class="lite_btn btn_white screen1-buttons" onclick="s1Input()" name="plot" value="Plot" type="button" style="position: absolute; margin-top: 40px; margin-left: 0px; width: 40px" />
                     <input class="lite_btn btn_white screen1-buttons" onclick="clearGraph('graphS1', true)" id="clearbtn" name="clear" value="Clear" type="button" style="position: absolute; margin-top: 40px; margin-left: 350px; width: 45px; visibility: hidden;" />
                     <input class="lite_btn btn_gray screen1-buttons" id="nxtbtn" name="move" onclick="changeScreens()" value="Next Screen" type="button" style="position: absolute; margin-top: 40px; margin-left: 738px; width: 140px; visibility: hidden;" />
@@ -198,13 +209,17 @@
                 </div>
             </div>
             <div><br /></div>
+            
+            <!-- Screen 2 -->
             <div id="screen2" name="screen2" style="display: none" class="right-section right-section_new">
                 <div class="right-head">Maximal Accumulated Oxygen Deficit (MAOD)</div>
+                
+                <!-- Input values for Time Intervals (drop-down list), Estimated VO2max, and Supramaximal Workrate -->
                 <div id="input-vals">
 
                     <div style="display: inline">
                         <label for="value"><strong>Time interval (s)</strong></label>
-                        <label for="Vmax" style="margin-left: 48px"><strong>Estimated V0<sub>2max</sub>(L/min)</strong></label>
+                        <label for="Vmax" style="margin-left: 48px"><strong>Estimated V0<sub>2max</sub> (L/min)</strong></label>
                         <label for="supramaximal" style="margin-left: 48px"><strong>Supramaximal Workrate (%max)</strong></label>
                         <label for="tints" style="margin-left: 45px" id="reqWUnits"><p id=""></p></label>
                     </div>
@@ -212,27 +227,26 @@
                     <br />
                     <br />
                     <select name="tints" id="tints" style="width: 110px; float: left;" onkeypress="adjIntervalTable(this)" onkeydown="adjIntervalTable(this)" onChange="adjIntervalTable(this)">
+                        <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
                         <option value="20">20</option>
                         <option value="30">30</option>
                         <option value="45">45</option>
                         <option value="60">60</option>
-                        <option value="90">90</option>
-                        <option value="180">180</option>
                     </select>
                     <input type="text" id="timeInterval" required style="width: 40px; visibility: hidden; display: none;" maxlength="3" onkeypress="adjIntervalTable(this)" onkeydown="adjIntervalTable(this)" onChange="adjIntervalTable(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
 
 
-                    <input type="text" id="Vmax" style="width: 110px; margin-left: 43px" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-                    <input type="text" id="supramaximal" style="width: 150px; margin-left: 40px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                    <input type="text" id="Vmax" style="width: 110px; margin-left: 43px" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" onkeypress="reqSpeed()" onkeydown="reqSpeed()" onChange="reqSpeed()"/>
+                    <input type="text" id="supramaximal" style="width: 150px; margin-left: 40px;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" onkeypress="reqSpeed()" onkeydown="reqSpeed()" onChange="reqSpeed()" />
                     <input type="text" disabled id="reqworkload" style="width: 150px; display: inline-block; margin-left: 42px;" />
 
                 </div>
 
                 <br />
 
-
+                <!-- Input table for VO2max, plotted in secondGraph -->
                 <div class="field_row" style="border-bottom: none;">
                     <ul class="field_24" id="interval" style="position: absolute; padding-bottom: 10px; margin-top: 20px;">
                         <label style="margin: 0; padding: 0; text-align: center;"><strong>Interval</strong></label>
@@ -258,7 +272,7 @@
                     </ul>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <ul id="vo2" class="field_24" style="position: absolute; margin-left: 80px; padding-bottom: 10px; margin-top: 20px;">
-                        <label style="margin: 0; padding: 0; text-align: center;"><strong>V0<sub>2 Max</sub></strong></label>
+                        <label style="margin: 0; padding: 0; text-align: center;"><strong>V0<sub>2max</sub></strong></label>
                         <label style="margin: 0; padding: 0; text-align: center;"><strong>(L/min)</strong></label>
                         <li><input class="y2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
                         <li><input class="y2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
@@ -280,6 +294,7 @@
                         <li><input class="y2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></li>
                     </ul>
 
+                    <!-- SVG graph element using D3 to create and plot graph, and axis labels -->                    
                     <div id="results2" style="text-align: center; background-color: #c5efdb; margin-left: 300px; margin-top: -30px; margin-right: -35px; padding: 20px; opacity: 0.0; font-size: 25px;">Result</div>
                     <div id="percent" style="position: absolute; text-align: center; margin-left: 968px; margin-top: -40px; font-size: 25px; opacity: 0.0;">99.9%</div>
 
@@ -291,10 +306,11 @@
                     <p id="xAxisLabel2" class="axis text" style="text-align: center; margin-left: 345px; padding-bottom: 220px; opacity: 0.0;">Graph</p>
                 </div>
                 
+                <!-- Navigation buttons for plotting graph, clearing data, and moving to previous screen -->
                 <div style="position: relative;">
                     <input class="lite_btn btn_white" onclick="s2Input()" name="plot" value="Plot" type="button" style="position: absolute; width: 40px;" />
                     <input class="lite_btn btn_white" onclick="clearGraph('graphS2', true)" name="clear" value="Clear" type="button" style="position: absolute; margin-left: 350px;   width: 45px" />
-                    <input class="lite_btn btn_white" id="move" name="move" onclick="changeScreens()" value="Next Screen" type="button" style="position: absolute; margin-left: 738px; width: 140px;" />
+                    <input class="lite_btn btn_white" id="move" name="move" onclick="changeScreens()" value="Next Screen" type="button" style="position: absolute; margin-left: 738px; width: 160px;" />
                 </div>
             </div>
 
